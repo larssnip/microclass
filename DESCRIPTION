@@ -1,0 +1,23 @@
+Encoding: latin1
+Package: microclass
+Type: Package
+Title: Methods for Taxonomic Classification of Prokaryotes
+Version: 1.1
+Date: 2017-03-26
+Author: Kristian Hovde Liland, Hilde Vinje, Lars Snipen
+Maintainer: Lars Snipen <lars.snipen@nmbu.no>
+Description: Functions for assigning 16S sequence data to a
+    taxonomic level in the tree-of-life for prokaryotes.
+License: GPL (>= 2)
+Depends:
+    R (>= 3.0.0),
+    microseq,
+    microcontax
+Imports:
+    Rcpp (>= 0.11.1), RcppParallel
+LinkingTo: Rcpp (>= 0.11.1), RcppEigen, RcppParallel
+SystemRequirements: GNU make
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
