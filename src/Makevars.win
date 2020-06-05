@@ -1,12 +1,24 @@
 ## Use the R_HOME indirection to support installations of multiple R version
+CXX_STD = CXX11
 PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
-## PKG_CXXFLAGS += -Ilibsrc $(SHLIB_OPENMP_CXXFLAGS) '$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppProgress:::CxxFlags()"')
 
 PKG_LIBS += $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" \
               -e "RcppParallel::RcppParallelLibs()")
-PKG_LIBS += $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
 
-CXX_STD = CXX11
+
+#PKG_CXXFLAGS += -DRCPP_PARALLEL_USE_TBB=1
+#PKG_CXXFLAGS += -Ilibsrc $(SHLIB_OPENMP_CXXFLAGS) '$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppProgress:::CxxFlags()"')
+
+#PKG_LIBS += $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" \
+#              -e "RcppParallel::RcppParallelLibs()")
+#PKG_LIBS += $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS) $(SHLIB_OPENMP_CXXFLAGS)
+
+#CXX_STD = CXX11
+
+
+
+
+
 ## PKG_LIBS += '$(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "RcppProgress:::CxxFlags()")'
 
 ## PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"`

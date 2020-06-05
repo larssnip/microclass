@@ -40,4 +40,3 @@ List charToInt(CharacterVector Seq) {
   }
   return wrap(seq_int);
 }
-
