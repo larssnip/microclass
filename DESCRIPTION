@@ -1,9 +1,9 @@
-Encoding: latin1
+Encoding: UTF-8
 Package: microclass
 Type: Package
 Title: Methods for Taxonomic Classification of Prokaryotes
-Version: 2.0
-Date: 2020-01-19
+Version: 1.2
+Date: 2020-06-06
 Author: Kristian Hovde Liland, Hilde Vinje, Lars Snipen
 Maintainer: Lars Snipen <lars.snipen@nmbu.no>
 Description: Functions for assigning 16S sequence data to a
@@ -15,9 +15,10 @@ Depends:
     dplyr,
     stringr
 Imports:
-    Rcpp (>= 0.12.0),
-    RcppParallel
-LinkingTo: Rcpp (>= 0.12.0),
-    RcppParallel
+  Rcpp (>= 0.11.1), RcppParallel, tibble
+LinkingTo: Rcpp (>= 0.11.1), RcppEigen, RcppParallel
 SystemRequirements: GNU make
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

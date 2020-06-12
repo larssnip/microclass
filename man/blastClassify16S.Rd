@@ -44,13 +44,11 @@ vary between taxa.
 }
 \examples{
 data("small.16S")
-seq <- small.16S$Sequence
-tax <- sapply(strsplit(small.16S$Header,split=" "),function(x){x[2]})
 \dontrun{
-dbase <- blastDbase16S("test",seq,tax)
-reads <- amplicon(seq)
-predicted <- blastClassify16S(reads[nchar(reads)>0],dbase)
-print(predicted)
+dbase <- blastDbase16S("test", small.16S$Sequence, word(small.16S$Header, 2, 2))
+reads <- str_sub(small.16S$Sequence, 100, 550)
+blastClassify16S(reads, dbase) \%>\% 
+  bind_cols(small.16S) -> tbl
 }
 
 }
