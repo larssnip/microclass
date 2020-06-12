@@ -4,8 +4,13 @@
 \alias{taxMachine}
 \title{Classifying 16S sequences}
 \usage{
-taxMachine(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
-  verbose = TRUE, chunk.size = 10000)
+taxMachine(
+  sequence,
+  model.in.memory = TRUE,
+  model.on.disk = FALSE,
+  verbose = TRUE,
+  chunk.size = 10000
+)
 }
 \arguments{
 \item{sequence}{Character vector with DNA sequences.}
