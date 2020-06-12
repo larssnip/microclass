@@ -19,8 +19,6 @@
 #' Maintainer: Lars Snipen <lars.snipen@@nmbu.no>
 #' 
 #' @keywords package
-#' @seealso \code{\link[microseq]{microseq}}, 
-#' \code{\link[microcontax]{microcontax}}
 #' 
 #' @export
 #' @import microseq

@@ -21,10 +21,6 @@ Date: \tab 2016-08-31\cr
 License: \tab GPL-2\cr
 }
 }
-\seealso{
-\code{\link[microseq]{microseq}}, 
-\code{\link[microcontax]{microcontax}}
-}
 \author{
 Hilde Vinje, Kristian Hovde Liland, Lars Snipen.\cr
 Maintainer: Lars Snipen <lars.snipen@nmbu.no>

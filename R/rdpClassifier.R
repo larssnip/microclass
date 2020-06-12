@@ -39,23 +39,22 @@
 #' 
 #' @export rdpTrain
 #' 
-rdpTrain <- function( sequence, taxon, K=8, cnames=FALSE ){
+rdpTrain <- function(sequence, taxon, K = 8, cnames = FALSE){
   taxInt    <- taxon
-  sizes     <- as.numeric( table( taxon ) )
-  taxInt    <- factor( taxon )
-  taxLevels <- levels( taxInt )
-  taxInt    <- as.integer( taxInt )
-  prior     <- sizes / length( taxon )
-  classesIn <- lapply( 1:max(taxInt), function(i)which(i==taxInt) )
-  presence.prob <- rdpTrainCpp( charToInt( sequence ), K,
-                                cnames, classesIn, -1 )
+  sizes     <- as.numeric(table(taxon))
+  taxInt    <- factor(taxon)
+  taxLevels <- levels(taxInt)
+  taxInt    <- as.integer(taxInt)
+  prior     <- sizes / length(taxon)
+  classesIn <- lapply(1:max(taxInt), function(i)which(i==taxInt) )
+  presence.prob <- rdpTrainCpp(charToInt(sequence), K, cnames, classesIn, -1)
   presence.prob <- CountsToRDP(presence.prob, sizes)
-  if( is.character( taxon ) ){
-    dimnames( presence.prob ) <- list( taxLevels, NULL ) # Avoids copying
+  if(is.character(taxon)){
+    dimnames(presence.prob) <- list(taxLevels, NULL) # Avoids copying
   }
-  attr( presence.prob, "prior" ) <- prior
-  trained.model <- list( Method="RDPclassifier", Fitted=presence.prob )
-  return( trained.model )
+  attr(presence.prob, "prior") <- prior
+  trained.model <- list(Method = "RDPclassifier", Fitted = presence.prob)
+  return(trained.model)
 }
 
 
@@ -105,20 +104,20 @@ rdpTrain <- function( sequence, taxon, K=8, cnames=FALSE ){
 #' 
 #' @export rdpClassify
 #' 
-rdpClassify <- function( sequence, trained.model, post.prob=FALSE, prior=FALSE ){
-  if( trained.model$Method != "RDPclassifier" ) stop( "Trained model is not an RDPclassifier!" )
+rdpClassify <- function(sequence, trained.model, post.prob = FALSE, prior = FALSE){
+  if(trained.model$Method != "RDPclassifier") stop("Trained model is not an RDPclassifier!")
   presence.prob <- trained.model$Fitted
-  K <- as.integer( log2( dim( presence.prob )[2] )/2 )
-  if( prior ){
-    priors <- log2( attr( presence.prob, "prior" ) )
+  K <- as.integer(log2(dim(presence.prob)[2])/2)
+  if(prior){
+    priors <- log2(attr(presence.prob, "prior"))
   } else {
     priors <- rep(0, dim(presence.prob)[1])
   }
-  X <- rdpClassifyCpp(charToInt( sequence ), K, presence.prob, priors, TRUE)
+  X <- rdpClassifyCpp(charToInt(sequence), K, presence.prob, priors, TRUE)
   if(post.prob){
-    return( data.frame(Taxon.1 = rownames(presence.prob)[X$first_ind], Post.prob.1 = X$first,
-                       Taxon.2 = rownames(presence.prob)[X$second_ind], Post.prob.2 = X$second,
-                       stringsAsFactors=FALSE) )
+    return(data.frame(Taxon.1 = rownames(presence.prob)[X$first_ind], Post.prob.1 = X$first,
+                      Taxon.2 = rownames(presence.prob)[X$second_ind], Post.prob.2 = X$second,
+                      stringsAsFactors = FALSE))
   } else {
     return(rownames(presence.prob)[X$first_ind])
   }

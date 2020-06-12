@@ -13,13 +13,13 @@ vignette: >
 
 ## K-mers
 
-All methods in this package are based on K-mer counting. K-mers are words of length $K$, found in the sequence being analysed. There are $4^K$ possible words of length $K$, and all instances in a sequene are counted. Given the sequence "ATGCCTGAACTGACCTGC" we can, for instance, count 1-mers, 2-mers and 3-mers as follows:
+All methods in this package are based on K-mer counting. K-mers are words of length $K$, found in the DNA sequence being analysed. There are $4^K$ possible words of length $K$, and all instances in a sequence are counted. Given the sequence "ATGCCTGAACTGACCTGC" we can, for instance, count 1-mers, 2-mers and 3-mers as follows:
 
 ```{r,message=FALSE}
 library(microclass)
-KmerCount("ATGCCTGAACTGACCTGC", K=1, col.names = TRUE)
-KmerCount("ATGCCTGAACTGACCTGC", K=2, col.names = TRUE)
-KmerCount("ATGCCTGAACTGACCTGC", K=3, col.names = TRUE)
+KmerCount("ATGCCTGAACTGACCTGC", K = 1, col.names = TRUE)
+KmerCount("ATGCCTGAACTGACCTGC", K = 2, col.names = TRUE)
+KmerCount("ATGCCTGAACTGACCTGC", K = 3, col.names = TRUE)
 ```
 
 
@@ -29,14 +29,17 @@ The quickest way to perform prokaryote classification is through the `taxMachine
 classification methods based on the multinomial method, trained on the `microcontax` data set.
 
 ```{r}
+library(microcontax)
 data(small.16S)
 tax.tab <- taxMachine(small.16S$Sequence)
 head(tax.tab)
-
-genus <- sapply(strsplit(small.16S$Header,split=" "),function(x){x[2]})
-cat( "Number of errors:", sum(genus != tax.tab$Genus) )
 ```
-Notice that a model is created and cached in memory the first time you call `taxMachine()` in a session. This is to avoid storing a huge matrix. The next call to taxMachine in this session will be (much) faster, since it will re-use the created model.
+
+```{r}
+genus <- sapply(strsplit(small.16S$Header,split=" "),function(x){x[2]})
+cat("Number of errors:", sum(genus != tax.tab$Genus))
+```
+Notice that a model is created and cached in memory the first time you call `taxMachine()` in a session. This is to avoid storing a huge matrix. The next call to `taxMachine()` in this session will be (much) faster, since it will re-use the created model.
 
 
 ### Parallell computing

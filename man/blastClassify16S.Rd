@@ -22,7 +22,7 @@ A 16S based classification based on BLAST.
 \details{
 A vector of 16S sequences (DNA) are classified by first using BLAST \code{blastn} against
 a database of 16S DNA sequences, and then classify according to the nearest-neighbour principle.
-The nearest neighbour of a query sequence is the hit with the largest bitscore. The BLAST+
+The nearest neighbour of a query sequence is the hit with the largest bitscore. The blast+
 software  \url{https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download}
 must be installed on the system. Type \code{system("blastn -help")} in the Console window,
 and a sensible Help-text should appear.

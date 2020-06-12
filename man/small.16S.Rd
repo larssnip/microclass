@@ -13,7 +13,7 @@ A \code{tibble} object (\code{data.frame}) with some 16S sequences with taxon in
 \details{
 This is a \code{tibble} object (\code{data.frame}) with 71 sequences used in some examples.
 The taxonomy information for each sequence follows the ConTax format, see the 
-\code{\link[microcontax]{microcontax}} package for more details.
+\code{\link{microcontax}} package for more details.
 }
 \examples{
 data(small.16S)

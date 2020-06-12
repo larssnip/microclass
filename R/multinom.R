@@ -42,25 +42,25 @@
 #' 
 #' @export multinomTrain
 #' 
-multinomTrain <- function( sequence, taxon, K=8, col.names=FALSE, n.pseudo=100 ){
+multinomTrain <- function(sequence, taxon, K = 8, col.names = FALSE, n.pseudo = 100){
   taxInt <- taxon
-  if( is.character( taxon ) ){
-    taxInt  <- factor( taxon )
-    taxLevels <- levels( taxInt )
-    taxInt  <- as.integer( taxInt )
-    prior <- as.numeric( table( taxon )/length( taxon ) )
+  if(is.character(taxon)){
+    taxInt  <- factor(taxon)
+    taxLevels <- levels(taxInt)
+    taxInt  <- as.integer(taxInt)
+    prior <- as.numeric(table(taxon)/length(taxon))
   }
-  classesIn <- lapply( 1:max(taxInt), function(i)which(i==taxInt) )
-  multinom.prob <- multinomTrainCpp( charToInt(sequence), K, col.names, classesIn, -1 )
+  classesIn <- lapply(1:max(taxInt), function(i)which(i==taxInt))
+  multinom.prob <- multinomTrainCpp(charToInt(sequence), K, col.names, classesIn, -1)
   if(n.pseudo >= 0){ # Apply pseudo counts in R
     multinom.prob <- CountsToMultinom(multinom.prob, n.pseudo)
   }
-  if( is.character( taxon ) ){
-    dimnames( multinom.prob ) <- list( taxLevels, NULL ) # Avoids copying
+  if(is.character(taxon)){
+    dimnames(multinom.prob) <- list(taxLevels, NULL) # Avoids copying
   }
-  attr( multinom.prob, "prior" ) <- prior
-  trained.model <- list( Method="multinom", Fitted=multinom.prob )
-  return( trained.model )
+  attr(multinom.prob, "prior") <- prior
+  trained.model <- list(Method = "multinom", Fitted = multinom.prob)
+  return(trained.model)
 }
 
 #' @name multinomClassify
@@ -117,20 +117,20 @@ multinomTrain <- function( sequence, taxon, K=8, col.names=FALSE, n.pseudo=100 )
 #' 
 #' @export multinomClassify
 #' 
-multinomClassify <- function( sequence, trained.model, post.prob=FALSE, prior=FALSE ){
-  if( trained.model$Method != "multinom" ) stop( "Trained model is not a multinomial!" )
+multinomClassify <- function(sequence, trained.model, post.prob = FALSE, prior = FALSE){
+  if(trained.model$Method != "multinom") stop("Trained model is not a multinomial!")
   multinom.prob <- trained.model$Fitted
-  int.list <- charToInt( sequence )
-  if( prior ){
-    priors <- log2( attr( multinom.prob, "prior" ) )
+  int.list <- charToInt(sequence)
+  if(prior){
+    priors <- log2(attr(multinom.prob, "prior"))
   } else {
     priors <- rep(0, dim(multinom.prob)[1])
   }
-  X <- multinomClassifyCpp( int.list, log(ncol(multinom.prob), 4), multinom.prob, priors, post.prob )
+  X <- multinomClassifyCpp(int.list, log(ncol(multinom.prob), 4), multinom.prob, priors, post.prob)
   if(post.prob){
-    return( data.frame(Taxon.1 = rownames(multinom.prob)[X$first_ind], Post.prob.1 = X$first,
-                       Taxon.2 = rownames(multinom.prob)[X$second_ind], Post.prob.2 = X$second,
-                       stringsAsFactors=FALSE) )
+    return(data.frame(Taxon.1 = rownames(multinom.prob)[X$first_ind], Post.prob.1 = X$first,
+                      Taxon.2 = rownames(multinom.prob)[X$second_ind], Post.prob.2 = X$second,
+                      stringsAsFactors=FALSE))
   } else {
     return(rownames(multinom.prob)[X$first_ind])
   }
@@ -155,27 +155,27 @@ multinomClassify <- function( sequence, trained.model, post.prob=FALSE, prior=FA
 #' }
 #' 
 #' @importFrom RcppParallel RcppParallelLibs setThreadOptions defaultNumThreads
-setParallel <- function( C=NULL ){
+setParallel <- function(C = NULL){
   if(is.null(C)){ # Reset to default
-    setThreadOptions( numThreads=defaultNumThreads() )
+    setThreadOptions(numThreads = defaultNumThreads())
   } else {
     if(C < 1) # Fraction of available cores
-      setThreadOptions( numThreads=max( 1, round( defaultNumThreads()*C ) ) )
+      setThreadOptions(numThreads = max(1, round(defaultNumThreads()*C )))
     if(C >= 1)
-      setThreadOptions( numThreads=C )
+      setThreadOptions(numThreads = C)
   }
   invisible(NULL)
 }
 
 # Unexported functions for transforming sparse count matrices to
 # multinomial classification matrices
-CountsToRDP <- function( X, sizes ){
-  log2( X+rep(attr(X,'p')+0.5,each=nrow(X))/(sum(sizes)+1)) - log2( sizes+1 )
+CountsToRDP <- function(X, sizes){
+  log2(X + rep(attr(X, 'p') + 0.5, each = nrow(X)) / (sum(sizes) + 1)) - log2(sizes + 1)
 }
-CountsToMultinom <- function( X, n.pseudo ){
-  log2( X+n.pseudo/ncol(X) ) - log2( rowSums(X)+n.pseudo )
+CountsToMultinom <- function(X, n.pseudo){
+  log2(X + n.pseudo / ncol(X)) - log2(rowSums(X) + n.pseudo)
 }
-CountsToMultinomMulti <- function( X, n.pseudo, rowsums ){
-  log2( X+n.pseudo/ncol(X) ) - log2( rowsums+n.pseudo )
+CountsToMultinomMulti <- function(X, n.pseudo, rowsums){
+  log2(X + n.pseudo / ncol(X)) - log2(rowsums + n.pseudo)
 }
 

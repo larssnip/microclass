@@ -10,7 +10,7 @@
 #' @details
 #' This is a \code{tibble} object (\code{data.frame}) with 71 sequences used in some examples.
 #' The taxonomy information for each sequence follows the ConTax format, see the 
-#' \code{\link[microcontax]{microcontax}} package for more details.
+#' \code{\link{microcontax}} package for more details.
 #' 
 #' @author Hilde Vinje, Kristian Hovde Liland, Lars Snipen.
 #' 

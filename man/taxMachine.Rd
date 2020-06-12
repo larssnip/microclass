@@ -65,7 +65,7 @@ since this will take some time.
 \examples{
 \dontrun{
 data(small.16S)
-tax.tab <- taxMachine( small.16S$Sequence )
+tax.tab <- taxMachine(small.16S$Sequence)
 }
 
 }

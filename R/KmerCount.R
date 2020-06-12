@@ -26,11 +26,11 @@
 #' 
 #' @export KmerCount
 #' 
-KmerCount <- function( sequences, K=1, col.names=FALSE ){
-  int.list <- charToInt( sequences )
-  X <- Kmer_count( int.list, K, col.names )
-  rownames( X ) <- names( sequences )
-  return( X )
+KmerCount <- function(sequences, K = 1, col.names = FALSE){
+  int.list <- charToInt(sequences)
+  X <- Kmer_count(int.list, K, col.names)
+  rownames(X) <- names(sequences)
+  return(X)
 }
 
 # #' @rdname KmerCount

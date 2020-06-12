@@ -8,7 +8,7 @@
 #' 
 #' @details A vector of 16S sequences (DNA) are classified by first using BLAST \code{blastn} against
 #' a database of 16S DNA sequences, and then classify according to the nearest-neighbour principle.
-#' The nearest neighbour of a query sequence is the hit with the largest bitscore. The BLAST+
+#' The nearest neighbour of a query sequence is the hit with the largest bitscore. The blast+
 #' software  \url{https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastDocs&DOC_TYPE=Download}
 #' must be installed on the system. Type \code{system("blastn -help")} in the Console window,
 #' and a sensible Help-text should appear.
@@ -47,14 +47,14 @@
 #' 
 #' @importFrom utils read.table
 #' @importFrom microseq writeFasta
-#' @importFrom dplyr rename arrange distinct mutate
+#' @importFrom dplyr rename arrange distinct mutate desc
+#' @importFrom stringr str_remove
+#' @importFrom rlang .data
 #' 
 #' @export blastClassify16S
 #' 
 blastClassify16S <- function(sequence, bdb){
-  n <- length(sequence)
-  tags <- paste("Query", 1:n, sep = "_")
-  qry <- data.frame(Header = tags,
+  qry <- data.frame(Header = paste("Query", 1:length(sequence), sep = "_"),
                     Sequence = sequence,
                     stringsAsFactors = F)
   tfa <- tempfile(fileext = ".fasta")
@@ -68,16 +68,16 @@ blastClassify16S <- function(sequence, bdb){
                "-outfmt \"6 qseqid qlen sseqid length pident bitscore\"")
   system(cmd)
   read.table(tft, sep="\t", header = F, stringsAsFactors = F) %>% 
-    rename(Query = V1, Qlen = V2, Hit = V3, Alen = V4, Perc = V5, Bitscore = V6) %>% 
-    arrange(desc(Bitscore)) %>% 
-    distinct(Query, .keep_all = T) %>% 
-    mutate(Taxon = str_remove(Hit, "_[0-9]+$")) %>% 
-    mutate(Idty = (Perc / 100) * Alen / Qlen + pmax(0, Qlen - Alen) / 4) -> b.tbl
+    rename(Query = .data$V1, Qlen = .data$V2, Hit = .data$V3, Alen = .data$V4, Perc = .data$V5, Bitscore = .data$V6) %>% 
+    arrange(desc(.data$Bitscore)) %>% 
+    distinct(.data$Query, .keep_all = T) %>% 
+    mutate(Taxon = str_remove(.data$Hit, "_[0-9]+$")) %>% 
+    mutate(Idty = (.data$Perc / 100) * .data$Alen / .data$Qlen + pmax(0, .data$Qlen - .data$Alen) / 4) -> b.tbl
   
-  res.tbl <- data.frame(Taxon.hat = rep("unclassified", n),
-                        Identity = rep(0, n),
+  res.tbl <- data.frame(Taxon.hat = rep("unclassified", length(sequence)),
+                        Identity = rep(0, length(sequence)),
                         stringsAsFactors = F)
-  idx <- match(b.tbl$Query, tags)
+  idx <- match(b.tbl$Query, qry$Header)
   res.tbl$Taxon.hat[idx] <- b.tbl$Taxon
   res.tbl$Identity[idx] <- b.tbl$Idty
   ok <- file.remove(c(tfa, tft))
@@ -117,7 +117,8 @@ blastClassify16S <- function(sequence, bdb){
 #' @examples # See examples for blastClassify16S.
 #' 
 #' @importFrom dplyr %>% mutate
-#' @importFrom stringr str_to_upper str_replace_all
+#' @importFrom stringr str_to_upper str_replace_all str_c
+#' @importFrom rlang .data
 #' 
 #' @export blastDbase16S
 #' 
@@ -126,8 +127,8 @@ blastDbase16S <- function(name, sequence, taxon){
   data.frame(Header = str_c(taxon, 1:length(sequence), sep="_"),
              Sequence = str_to_upper(sequence),
              stringsAsFactors = F) %>% 
-    mutate(Sequence = str_replace_all(Sequence, "U", "T")) %>% 
-    mutate(Sequence = str_replace_all(Sequence, "[^ACGTNRYSWKMBDHV]", "N")) %>% 
+    mutate(Sequence = str_replace_all(.data$Sequence, "U", "T")) %>% 
+    mutate(Sequence = str_replace_all(.data$Sequence, "[^ACGTNRYSWKMBDHV]", "N")) %>% 
     writeFasta(out.file = tfa)
   system(paste("makeblastdb -dbtype nucl -in", tfa, "-out", name))
   file.remove(tfa)
