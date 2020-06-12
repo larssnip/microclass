@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kristian Hovde Liland, Hilde Vinje and Lars Snipen" />
 
-<meta name="date" content="2017-01-17" />
+<meta name="date" content="2017-08-10" />
 
 <title>Introduction to microclass</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to microclass</h1>
 <h4 class="author"><em>Kristian Hovde Liland, Hilde Vinje and Lars Snipen</em></h4>
-<h4 class="date"><em>2017-01-17</em></h4>
+<h4 class="date"><em>2017-08-10</em></h4>
 
 
 
@@ -129,7 +129,7 @@ tax.tab &lt;-<span class="st"> </span><span class="kw">taxMachine</span>(small.1
 <span class="kw">boxplot</span>(tax.tab$D.score, <span class="kw">factor</span>(genus), <span class="dt">main =</span> <span class="st">&quot;D-score&quot;</span>)
 <span class="kw">boxplot</span>(tax.tab$R.score, <span class="kw">factor</span>(genus), <span class="dt">main =</span> <span class="st">&quot;R-score&quot;</span>)</code></pre></div>
 <div class="figure">
-<img src="data:image/png;base64,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" alt="Classification uncertainty scores" />
+<img src="data:image/png;base64,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" alt="Classification uncertainty scores" />
 <p class="caption">Classification uncertainty scores</p>
 </div>
 <p>Along with each <code>R.score</code> value is also a <code>P.recognized</code> value. This is simply the probability that one of the training data sequences get an <code>R.score</code> of the same value, or lower. It is perhaps easier to interpret than the score itself. We typically use this to mark some sequences as unrecognized, and risky to include in further analyses:</p>
@@ -166,7 +166,7 @@ predicted &lt;-<span class="st"> </span><span class="kw">rdpClassify</span>(smal
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

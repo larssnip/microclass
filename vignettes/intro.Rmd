@@ -38,12 +38,12 @@ cat( "Number of errors:", sum(genus != tax.tab$Genus) )
 ```
 Notice that a model is created and cached in memory the first time you call `taxMachine()` in a session. This is to avoid storing a huge matrix. The next call to taxMachine in this session will be (much) faster, since it will re-use the created model.
 
+
 ### Parallell computing
 The number of processing cores to be used is controlled by the `setParallel()` command. The default is to used all available cores (logical and physical). Please remember to set this prior to a call if you run this on a computing cluster!
 
 
 ## Uncertainty
-
 All input sequences are given a classification by the `taxMachine()`, but some may be very uncertain.
 The `taxMachine()` also calculates two types of uncertainties: the `D.score` and the `R.score`. A small `D.score` (close to 0, less than 1) indicates an uncertain result because the sequence is also very similar to another genus, i.e. its posterior probability is almost equal for two different genera. The `R.score` indicates if the sequence is very different from any previously seen sequence, and the more negative the `R.score`, the more 'alien' the sequence is to the `taxMachine`.
 

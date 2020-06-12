@@ -38,43 +38,50 @@
 #' 
 #' @examples 
 #' data("small.16S")
-#' seq <- small.16S$Sequence
-#' tax <- sapply(strsplit(small.16S$Header,split=" "),function(x){x[2]})
 #' \dontrun{
-#' dbase <- blastDbase16S("test",seq,tax)
-#' reads <- amplicon(seq)
-#' predicted <- blastClassify16S(reads[nchar(reads)>0],dbase)
-#' print(predicted)
+#' dbase <- blastDbase16S("test", small.16S$Sequence, word(small.16S$Header, 2, 2))
+#' reads <- str_sub(small.16S$Sequence, 100, 550)
+#' blastClassify16S(reads, dbase) %>% 
+#'   bind_cols(small.16S) -> tbl
 #' }
 #' 
 #' @importFrom utils read.table
+#' @importFrom microseq writeFasta
+#' @importFrom dplyr rename arrange distinct mutate
+#' 
 #' @export blastClassify16S
 #' 
-blastClassify16S <- function( sequence, bdb ){
-  n <- length( sequence )
-  tags <- paste( "Query", 1:n, sep="_" )
-  fdta <- data.frame( Header=tags,
-                      Sequence=sequence,
-                      stringsAsFactors=F )
-  writeFasta( fdta, out.file="query.fasta" )
-  cmd <- paste( "blastn -query query.fasta -db ", bdb, " -num_alignments 1",
-                " -out bres.txt -outfmt \"6 qseqid qlen sseqid length pident bitscore\"",
-                sep="")
-  system( cmd )
-  btab <- read.table( "bres.txt", sep="\t", header=F, stringsAsFactors=F )
-  file.remove( c( "query.fasta", "bres.txt" ) )
-  btab <- btab[order( btab[,6], decreasing=T ),]
-  btab <- btab[which( !duplicated( btab[,1] ) ),]
-  tax.hat <- gsub( "_[0-9]+$", "", btab[,3] )
-  idty <- (btab[,5]/100) * btab[,4]/btab[,2] + pmax(0,btab[,2]-btab[,4])*0.25
+blastClassify16S <- function(sequence, bdb){
+  n <- length(sequence)
+  tags <- paste("Query", 1:n, sep = "_")
+  qry <- data.frame(Header = tags,
+                    Sequence = sequence,
+                    stringsAsFactors = F)
+  tfa <- tempfile(fileext = ".fasta")
+  tft <- tempfile(fileext = ".txt")
+  writeFasta(qry, out.file = tfa)
+  cmd <- paste("blastn",
+                "-query", tfa,
+                "-db", bdb,
+               "-num_alignments", 1,
+                "-out", tft,
+               "-outfmt \"6 qseqid qlen sseqid length pident bitscore\"")
+  system(cmd)
+  read.table(tft, sep="\t", header = F, stringsAsFactors = F) %>% 
+    rename(Query = V1, Qlen = V2, Hit = V3, Alen = V4, Perc = V5, Bitscore = V6) %>% 
+    arrange(desc(Bitscore)) %>% 
+    distinct(Query, .keep_all = T) %>% 
+    mutate(Taxon = str_remove(Hit, "_[0-9]+$")) %>% 
+    mutate(Idty = (Perc / 100) * Alen / Qlen + pmax(0, Qlen - Alen) / 4) -> b.tbl
   
-  taxon.hat <- rep( "unclassified", n )
-  identity <- rep( 0, n )
-  idx <- match( btab[,1], tags )
-  taxon.hat[idx] <- tax.hat
-  identity[idx] <- idty
-  
-  return( data.frame( Taxon=taxon.hat, Identity=identity, stringsAsFactors=F ) )
+  res.tbl <- data.frame(Taxon.hat = rep("unclassified", n),
+                        Identity = rep(0, n),
+                        stringsAsFactors = F)
+  idx <- match(b.tbl$Query, tags)
+  res.tbl$Taxon.hat[idx] <- b.tbl$Taxon
+  res.tbl$Identity[idx] <- b.tbl$Idty
+  ok <- file.remove(c(tfa, tft))
+  return(res.tbl)
 }
 
 
@@ -109,18 +116,22 @@ blastClassify16S <- function( sequence, bdb ){
 #' 
 #' @examples # See examples for blastClassify16S.
 #' 
+#' @importFrom dplyr %>% mutate
+#' @importFrom stringr str_to_upper str_replace_all
+#' 
 #' @export blastDbase16S
 #' 
-blastDbase16S <- function( name, sequence, taxon ){
-  n <- length( taxon )
-  fdta <- data.frame( Header=paste( taxon, 1:n, sep="_" ),
-                      Sequence=gsub( "[^ACGTNRYSWKMBDHV]", "N", gsub( "U", "T", toupper(sequence) ) ),
-                      stringsAsFactors=F )
-  writeFasta(fdta,out.file="dbase.fasta")
-  cmd <- paste( "makeblastdb -dbtype nucl -in dbase.fasta -out", name )
-  system( cmd )
-  file.remove( "dbase.fasta" )
-  return( name )
+blastDbase16S <- function(name, sequence, taxon){
+  tfa <- tempfile(fileext = ".fasta")
+  data.frame(Header = str_c(taxon, 1:length(sequence), sep="_"),
+             Sequence = str_to_upper(sequence),
+             stringsAsFactors = F) %>% 
+    mutate(Sequence = str_replace_all(Sequence, "U", "T")) %>% 
+    mutate(Sequence = str_replace_all(Sequence, "[^ACGTNRYSWKMBDHV]", "N")) %>% 
+    writeFasta(out.file = tfa)
+  system(paste("makeblastdb -dbtype nucl -in", tfa, "-out", name))
+  file.remove(tfa)
+  return(name)
 }
 
 
