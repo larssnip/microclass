@@ -4,38 +4,40 @@
 \alias{multinomClassify}
 \title{Classifying with a Multinomial model}
 \usage{
-multinomClassify(sequence, trained.model, post.prob = FALSE, prior = FALSE)
+multinomClassify(sequence, multinom.prob, post.prob = FALSE, prior = FALSE)
 }
 \arguments{
-\item{sequence}{Character vector of 16S sequences to classify.}
+\item{sequence}{Character vector of sequences to classify.}
 
-\item{trained.model}{A list with a trained model, see \code{\link{multinomTrain}}.}
+\item{multinom.prob}{A matrix of multinomial probabilities, see \code{\link{multinomTrain}}.}
 
 \item{post.prob}{Logical indicating if posterior log-probabilities should be returned.}
 
 \item{prior}{Logical indicating if classification should be done by flat priors (default)
-or with empirical priors (prior=TRUE).}
+or with empirical priors.}
 }
 \value{
-If \code{post.prob=FALSE} a character vector of predicted taxa is returned.
+If \code{post.prob = FALSE} a character vector of predicted taxa is returned.
 
-If \code{post.prob=TRUE} a \code{data.frame} with three columns is returned. Taxon
-is the vector of predicted taxa, one for each sequence in \code{sequence}. The
-Post.prob.1 and Post.prob.2 are vectors with the maximum and second largest posterior
-log-probabilities for each sequence.
+If \code{post.prob = TRUE} a \code{data.frame} with three columns is returned.
+\itemize{
+  \item taxon. The predicted taxa, one for each sequence in \code{sequence}.
+  \item post_prob. The posterior log-probability of the assigned taxon.
+  \item post_prob_2. The largest posterior log-probability of the other taxa.
+}
 }
 \description{
 Classifying sequences by a trained Multinomial model.
 }
 \details{
-The classification step of the Multinomial method (Vinje et al, 2015) means counting 
-K-mers on all sequences, and computing the posterior probabilities for each taxon in the trained model.
-The predicted taxon for each input sequence is the one with the maximum posterior probability for
-that sequence.
+The classification step of the multinomial method (Vinje et al, 2015) means counting 
+K-mers on all sequences, and computing the posterior probabilities for each
+taxon given the trained model. The predicted taxon for each input sequence is
+the one with the maximum posterior probability for that sequence.
 
-By setting \code{post.prob=TRUE} you will get the log-probability of the best and second best taxon
-for each sequence. This can be used for evaluating the certainty in the classifications,
-see \code{\link{taxMachine}}.
+By setting \code{post.prob = TRUE} you will get the log-probability of the
+best and second best taxon for each sequence. This may be used for evaluating
+the certainty in the classifications.
 
 The classification is parallelized through RcppParallel
 employing Intel TBB and TinyThread. By default all available

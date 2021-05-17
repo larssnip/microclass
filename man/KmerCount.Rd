@@ -24,11 +24,11 @@ Counting overlapping words of length K in DNA/RNA sequences.
 For each input sequence, the frequency of every word of length \code{K} is counted. 
 Counting is done with overlap. The counting itself is done by a C++ function.
 
-With \code{col.names=TRUE} the K-mers are added as column names, but this makes the
+With \code{col.names = TRUE} the K-mers are added as column names, but this makes the
 computations slower.
 }
 \examples{
-KmerCount("ATGCCTGAACTGACCTGC",K=2)
+KmerCount("ATGCCTGAACTGACCTGC", K = 2)
 
 }
 \seealso{
