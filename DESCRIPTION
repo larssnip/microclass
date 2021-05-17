@@ -12,7 +12,7 @@ License: GPL (>= 2)
 Depends:
     R (>= 3.5.0),
     microseq,
-    microcontax,
+    data.table,
     dplyr,
     stringr,
     rlang

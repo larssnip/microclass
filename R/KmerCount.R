@@ -11,7 +11,7 @@
 #' @details For each input sequence, the frequency of every word of length \code{K} is counted. 
 #' Counting is done with overlap. The counting itself is done by a C++ function.
 #' 
-#' With \code{col.names=TRUE} the K-mers are added as column names, but this makes the
+#' With \code{col.names = TRUE} the K-mers are added as column names, but this makes the
 #' computations slower.
 #' 
 #' @return A matrix with one row for each sequence in \code{sequences} and one column for 
@@ -22,7 +22,7 @@
 #' @seealso \code{\link{multinomTrain}}, \code{\link{multinomClassify}}.
 #' 
 #' @examples 
-#' KmerCount("ATGCCTGAACTGACCTGC",K=2)
+#' KmerCount("ATGCCTGAACTGACCTGC", K = 2)
 #' 
 #' @export KmerCount
 #' 

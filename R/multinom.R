@@ -3,7 +3,7 @@
 #' 
 #' @description Training the multinomial K-mer method on sequence data.
 #' 
-#' @param sequence Character vector of 16S sequences.
+#' @param sequence Character vector of sequences.
 #' @param taxon Character vector of taxon labels for each sequence.
 #' @param K Word length (integer).
 #' @param col.names Logical indicating if column names should be added to the trained model matrix.
@@ -11,25 +11,23 @@
 #' will only return word counts, not log-probabilities.
 #' 
 #' @details The training step of the multinomial method (Vinje et al, 2015) means counting K-mers
-#' on all sequences and compute the multinomial probabilities for each K-mer for each unique taxon. 
+#' on all sequences and compute their multinomial probabilities for each taxon. 
 #' \code{n.pseudo} pseudo-counts are added, divided equally over all K-mers, before probabilities
 #' are estimated. The optimal choice of \code{n.pseudo} will depend on \code{K} and the 
-#' training data set. The default value \code{n.pseudo=100} has proven good for \code{K=8} and the
-#' \code{\link[microcontax]{contax.trim}} data set (see the \code{microcontax} R-package).
+#' training data set.
 #' 
-#' Adding the actual K-mers as column names (\code{col.names=TRUE}) will slow down the
+#' Adding the actual K-mers as column names (\code{col.names = TRUE}) will slow down the
 #' computations.
 #' 
-#' The relative taxon sizes are also computed, and may be used as an empirical prior in the
-#' classification step (see "prior" below).
+#' The relative taxon frequencies in the \code{taxon} input are also computed and
+#' returned as an attribute to the probability matrix.
 #' 
-#' @return A list with two elements. The first element is \code{Method}, which is the text 
-#' \code{"multinom"} in this case. The second element is \code{Fitted}, which is a matrix
-#' of probabilities with one row for each unique \code{taxon} and one column for each possible word of
-#' length\code{K}. The sum of each row is 1.0. No probabilities are 0 if \code{n.pseudo}>0.0.
+#' @return A matrix with the multinomial probabilities, one row for each
+#' \code{taxon} and one column for each K-mer. The sum of each row is 1.0. No
+#' probabilities are 0 if \code{n.pseudo} > 0.0.
 #' 
-#' The matrix \code{Fitted} has an attribute \code{attr("prior",)}, that contains the relative
-#' taxon sizes.
+#' The matrix has an attribute \code{attr("prior",)}, that contains the relative
+#' taxon frequencies.
 #' 
 #' @author Kristian Hovde Liland and Lars Snipen.
 #' 
@@ -42,25 +40,24 @@
 #' 
 #' @export multinomTrain
 #' 
-multinomTrain <- function(sequence, taxon, K = 8, col.names = FALSE, n.pseudo = 100){
-  taxInt <- taxon
+multinomTrain <- function(sequence, taxon, K = 4, col.names = FALSE, n.pseudo = 1){
+  tax.int <- taxon
   if(is.character(taxon)){
-    taxInt  <- factor(taxon)
-    taxLevels <- levels(taxInt)
-    taxInt  <- as.integer(taxInt)
-    prior <- as.numeric(table(taxon)/length(taxon))
+    tax.int  <- factor(taxon)
+    tax.levels <- levels(tax.int)
+    tax.int  <- as.integer(tax.int)
+    prior <- as.numeric(table(taxon) / length(taxon))
   }
-  classesIn <- lapply(1:max(taxInt), function(i)which(i==taxInt))
-  multinom.prob <- multinomTrainCpp(charToInt(sequence), K, col.names, classesIn, -1)
-  if(n.pseudo >= 0){ # Apply pseudo counts in R
+  classes.in <- lapply(1:max(tax.int), function(i)which(i == tax.int))
+  multinom.prob <- multinomTrainCpp(charToInt(sequence), K, col.names, classes.in, -1)
+  if(n.pseudo >= 0){
     multinom.prob <- CountsToMultinom(multinom.prob, n.pseudo)
   }
   if(is.character(taxon)){
-    dimnames(multinom.prob) <- list(taxLevels, NULL) # Avoids copying
+    dimnames(multinom.prob) <- list(tax.levels, NULL) # Avoids copying
   }
   attr(multinom.prob, "prior") <- prior
-  trained.model <- list(Method = "multinom", Fitted = multinom.prob)
-  return(trained.model)
+  return(multinom.prob)
 }
 
 #' @name multinomClassify
@@ -68,32 +65,34 @@ multinomTrain <- function(sequence, taxon, K = 8, col.names = FALSE, n.pseudo = 
 #' 
 #' @description Classifying sequences by a trained Multinomial model.
 #' 
-#' @param sequence Character vector of 16S sequences to classify.
-#' @param trained.model A list with a trained model, see \code{\link{multinomTrain}}.
+#' @param sequence Character vector of sequences to classify.
+#' @param multinom.prob A matrix of multinomial probabilities, see \code{\link{multinomTrain}}.
 #' @param post.prob Logical indicating if posterior log-probabilities should be returned.
 #' @param prior Logical indicating if classification should be done by flat priors (default)
-#' or with empirical priors (prior=TRUE).
+#' or with empirical priors.
 #' 
-#' @details The classification step of the Multinomial method (Vinje et al, 2015) means counting 
-#' K-mers on all sequences, and computing the posterior probabilities for each taxon in the trained model.
-#' The predicted taxon for each input sequence is the one with the maximum posterior probability for
-#' that sequence.
+#' @details The classification step of the multinomial method (Vinje et al, 2015) means counting 
+#' K-mers on all sequences, and computing the posterior probabilities for each
+#' taxon given the trained model. The predicted taxon for each input sequence is
+#' the one with the maximum posterior probability for that sequence.
 #' 
-#' By setting \code{post.prob=TRUE} you will get the log-probability of the best and second best taxon
-#' for each sequence. This can be used for evaluating the certainty in the classifications,
-#' see \code{\link{taxMachine}}.
+#' By setting \code{post.prob = TRUE} you will get the log-probability of the
+#' best and second best taxon for each sequence. This may be used for evaluating
+#' the certainty in the classifications.
 #' 
 #' The classification is parallelized through RcppParallel
 #' employing Intel TBB and TinyThread. By default all available
 #' processing cores are used. This can be changed using the
 #' function \code{\link{setParallel}}.
 #' 
-#' @return If \code{post.prob=FALSE} a character vector of predicted taxa is returned.
+#' @return If \code{post.prob = FALSE} a character vector of predicted taxa is returned.
 #' 
-#' If \code{post.prob=TRUE} a \code{data.frame} with three columns is returned. Taxon
-#' is the vector of predicted taxa, one for each sequence in \code{sequence}. The
-#' Post.prob.1 and Post.prob.2 are vectors with the maximum and second largest posterior
-#' log-probabilities for each sequence.
+#' If \code{post.prob = TRUE} a \code{data.frame} with three columns is returned.
+#' \itemize{
+#'   \item taxon. The predicted taxa, one for each sequence in \code{sequence}.
+#'   \item post_prob. The posterior log-probability of the assigned taxon.
+#'   \item post_prob_2. The largest posterior log-probability of the other taxa.
+#' }
 #' 
 #' @author Kristian Hovde Liland and Lars Snipen.
 #' 
@@ -117,20 +116,17 @@ multinomTrain <- function(sequence, taxon, K = 8, col.names = FALSE, n.pseudo = 
 #' 
 #' @export multinomClassify
 #' 
-multinomClassify <- function(sequence, trained.model, post.prob = FALSE, prior = FALSE){
-  if(trained.model$Method != "multinom") stop("Trained model is not a multinomial!")
-  multinom.prob <- trained.model$Fitted
+multinomClassify <- function(sequence, multinom.prob, post.prob = FALSE, prior = FALSE){
   int.list <- charToInt(sequence)
   if(prior){
     priors <- log2(attr(multinom.prob, "prior"))
   } else {
-    priors <- rep(0, dim(multinom.prob)[1])
+    priors <- rep(0, nrow(multinom.prob))
   }
   X <- multinomClassifyCpp(int.list, log(ncol(multinom.prob), 4), multinom.prob, priors, post.prob)
   if(post.prob){
-    return(data.frame(Taxon.1 = rownames(multinom.prob)[X$first_ind], Post.prob.1 = X$first,
-                      Taxon.2 = rownames(multinom.prob)[X$second_ind], Post.prob.2 = X$second,
-                      stringsAsFactors=FALSE))
+    return(data.frame(taxon = rownames(multinom.prob)[X$first_ind], post_prob = X$first,
+                      post_prob_2 = X$second, stringsAsFactors = FALSE))
   } else {
     return(rownames(multinom.prob)[X$first_ind])
   }

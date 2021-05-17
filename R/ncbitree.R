@@ -214,9 +214,9 @@ get_tax_id <- function(branch, names.dmp){
 #' @param ranks texts specifying the ranks to keep and their ordering.
 #' 
 #' @details Branches in the taxonomy tree may have many different ranks or levels. This function is used
-#' to prune them all to have the same set of ranks. Ranks may be missing in some branches.This function will then fill
-#' in NA in these cells, ensuring all branches have the exact same ranks in the exact same ordering. This is convenient
-#' for turning the list into a table, using \code{\link{as_tibble}}.
+#' to prune them all to have the same set of ranks. Ranks may be missing in some branches.This function
+#' will then fill in NA in these cells, ensuring all branches have the exact same ranks in the exact same
+#' ordering. This is convenient for turning the list into a table, using \code{\link{as_tibble}}.
 #' 
 #' @return A new branch-list with pruned branches all containing the exact same ranks.
 #' 
@@ -276,7 +276,8 @@ branch_prune <- function(branch.lst, ranks = c("superkingdom", "phylum", "class"
 #' @export branch_list2table
 #' @export branch_table2list
 #' 
-branch_list2table <- function(branch.lst, ranks = c("superkingdom", "phylum", "class", "order", "family", "genus", "species")){
+branch_list2table <- function(branch.lst,
+                              ranks = c("superkingdom", "phylum", "class", "order", "family", "genus", "species")){
   branch_prune(branch.lst, ranks = ranks) %>% 
     sapply(function(x){x}, simplify = T) %>% 
     t() %>% 
