@@ -10,7 +10,7 @@ Description: Functions for assigning 16S sequence data to a
     taxonomic level in the tree-of-life for prokaryotes.
 License: GPL (>= 2)
 Depends:
-    R (>= 3.5.0),
+    R (>= 4.0.0),
     microseq,
     data.table,
     dplyr,
