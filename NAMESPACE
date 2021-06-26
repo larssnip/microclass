@@ -3,6 +3,7 @@
 export(KmerCount)
 export(blastClassify16S)
 export(blastDbase16S)
+export(bracken_read_report)
 export(branch_list2qiime)
 export(branch_list2table)
 export(branch_name2taxid)
