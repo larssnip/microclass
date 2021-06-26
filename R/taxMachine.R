@@ -58,7 +58,6 @@
 #' }
 #' 
 #' @importFrom utils data
-#' @importFrom microcontax getGenus
 #' @importFrom stats approx median
 #' @export taxMachine
 #' 
@@ -107,9 +106,9 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
   # Create multinomial model if not available
   if(!do.load && !was.cached){
     if(verbose) cat("   creating model...\n")
-    contax.trim <- NULL
-    load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
-    fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
+    # contax.trim <- NULL
+    # load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
+    # fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
   }
   
   coef.bias <- coef.sd <- std.frame <- rprob.mat <- NULL
