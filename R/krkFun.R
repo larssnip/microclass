@@ -124,7 +124,7 @@ kraken2_read_report <- function(report.file){
 #' 
 #' @importFrom data.table fread
 #' 
-#' @export kraken2_read_report
+#' @export bracken_read_report
 #' 
 bracken_read_report <- function(report.file){
   fread(file = normalizePath(report.file),
