@@ -4,7 +4,7 @@
 \alias{KmerCount}
 \title{K-mer counting}
 \usage{
-KmerCount(sequences, K = 1, col.names = FALSE)
+KmerCount(sequences, K = 1, col.names = FALSE, codon = FALSE)
 }
 \arguments{
 \item{sequences}{Vector of sequences (text).}
@@ -12,6 +12,8 @@ KmerCount(sequences, K = 1, col.names = FALSE)
 \item{K}{Word length (integer).}
 
 \item{col.names}{Logical indicating if the words should be added as columns names.}
+
+\item{codon}{Logical indicating if K-mers should start at the beginning of a codon (default FALSE, i.e. all K-mers).}
 }
 \value{
 A matrix with one row for each sequence in \code{sequences} and one column for 
@@ -26,6 +28,9 @@ Counting is done with overlap. The counting itself is done by a C++ function.
 
 With \code{col.names = TRUE} the K-mers are added as column names, but this makes the
 computations slower.
+
+Counting of K-mers can also be restricted to the reading frame starting at the first nucleotide
+by setting \code{codon = TRUE}, i.e. leading to a skip of 3 instead of 1 when moving along the sequence.
 }
 \examples{
 KmerCount("ATGCCTGAACTGACCTGC", K = 2)

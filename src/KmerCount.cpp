@@ -3,7 +3,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-IntegerMatrix Kmer_count( SEXP seqs, int K, bool names ) {
+IntegerMatrix Kmer_count( SEXP seqs, int K, bool names, bool codon ) {
   
   Rcpp::List strings(seqs);
   int num_strings = strings.length();
@@ -20,12 +20,14 @@ IntegerMatrix Kmer_count( SEXP seqs, int K, bool names ) {
     Rcpp::IntegerVector seq1(s1);             // konverterer til IntegerVector, seq1 er sekvens i
     int num_substr = seq1.length()-K+1;       // antall ord av lengde K i sekvens i
     for( int j=0; j<num_substr; j++ ) {       // looper over alle ord
-      where = 0;
-      for( int k=0; k<K; k++){                // looper over posisjon i ord
-        where += seq1[j+k]*Where[k];          // where blir kolonnen til ordet i X, beregnet i 4-talls systemet
-      }                                       // dette er alltid et tall fra 0 til (4^K)-1, med mindre
-      if(where >= 0){                         // ett av elementene i sekvensen har verdien -4^K, da blir
-        ++X(i, where);                        // where negativ, og ordet ignoreres 
+      if(!codon || j%3==0){                   // sjekk om telling gjøres i leserammen
+        where = 0;
+        for( int k=0; k<K; k++){                // looper over posisjon i ord
+          where += seq1[j+k]*Where[k];          // where blir kolonnen til ordet i X, beregnet i 4-talls systemet
+        }                                       // dette er alltid et tall fra 0 til (4^K)-1, med mindre
+        if(where >= 0){                         // ett av elementene i sekvensen har verdien -4^K, da blir
+          ++X(i, where);                        // where negativ, og ordet ignoreres 
+        }
       }
     }
   }

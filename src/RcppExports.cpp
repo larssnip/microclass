@@ -6,16 +6,22 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // Kmer_count
-IntegerMatrix Kmer_count(SEXP seqs, int K, bool names);
-RcppExport SEXP _microclass_Kmer_count(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP) {
+IntegerMatrix Kmer_count(SEXP seqs, int K, bool names, bool codon);
+RcppExport SEXP _microclass_Kmer_count(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP, SEXP codonSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type seqs(seqsSEXP);
     Rcpp::traits::input_parameter< int >::type K(KSEXP);
     Rcpp::traits::input_parameter< bool >::type names(namesSEXP);
-    rcpp_result_gen = Rcpp::wrap(Kmer_count(seqs, K, names));
+    Rcpp::traits::input_parameter< bool >::type codon(codonSEXP);
+    rcpp_result_gen = Rcpp::wrap(Kmer_count(seqs, K, names, codon));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -62,7 +68,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_microclass_Kmer_count", (DL_FUNC) &_microclass_Kmer_count, 3},
+    {"_microclass_Kmer_count", (DL_FUNC) &_microclass_Kmer_count, 4},
     {"_microclass_charToInt", (DL_FUNC) &_microclass_charToInt, 1},
     {"_microclass_multinomClassifyCpp", (DL_FUNC) &_microclass_multinomClassifyCpp, 5},
     {"_microclass_multinomTrainCpp", (DL_FUNC) &_microclass_multinomTrainCpp, 5},
