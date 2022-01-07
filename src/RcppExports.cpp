@@ -25,6 +25,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Kmer_count_amino_acid
+IntegerMatrix Kmer_count_amino_acid(SEXP seqs, int K, bool names);
+RcppExport SEXP _microclass_Kmer_count_amino_acid(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< bool >::type names(namesSEXP);
+    rcpp_result_gen = Rcpp::wrap(Kmer_count_amino_acid(seqs, K, names));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Kmer_count_codon
+IntegerMatrix Kmer_count_codon(SEXP seqs, int K, bool names);
+RcppExport SEXP _microclass_Kmer_count_codon(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< bool >::type names(namesSEXP);
+    rcpp_result_gen = Rcpp::wrap(Kmer_count_codon(seqs, K, names));
+    return rcpp_result_gen;
+END_RCPP
+}
 // charToInt
 List charToInt(CharacterVector Seq);
 RcppExport SEXP _microclass_charToInt(SEXP SeqSEXP) {
@@ -33,6 +59,28 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< CharacterVector >::type Seq(SeqSEXP);
     rcpp_result_gen = Rcpp::wrap(charToInt(Seq));
+    return rcpp_result_gen;
+END_RCPP
+}
+// charToIntAminoAcid
+List charToIntAminoAcid(CharacterVector Seq);
+RcppExport SEXP _microclass_charToIntAminoAcid(SEXP SeqSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type Seq(SeqSEXP);
+    rcpp_result_gen = Rcpp::wrap(charToIntAminoAcid(Seq));
+    return rcpp_result_gen;
+END_RCPP
+}
+// charToIntCodon
+List charToIntCodon(CharacterVector Seq);
+RcppExport SEXP _microclass_charToIntCodon(SEXP SeqSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type Seq(SeqSEXP);
+    rcpp_result_gen = Rcpp::wrap(charToIntCodon(Seq));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -66,12 +114,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rdpClassifyCpp
+List rdpClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior);
+RcppExport SEXP _microclass_rdpClassifyCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP QMatSEXP, SEXP PriorSEXP, SEXP posteriorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type QMat(QMatSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Prior(PriorSEXP);
+    Rcpp::traits::input_parameter< bool >::type posterior(posteriorSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdpClassifyCpp(seqs, K, QMat, Prior, posterior));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rdpTrainCpp
+SEXP rdpTrainCpp(List seqs, int K, bool names, List classesIn, double nPseudo);
+RcppExport SEXP _microclass_rdpTrainCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP, SEXP classesInSEXP, SEXP nPseudoSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< bool >::type names(namesSEXP);
+    Rcpp::traits::input_parameter< List >::type classesIn(classesInSEXP);
+    Rcpp::traits::input_parameter< double >::type nPseudo(nPseudoSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdpTrainCpp(seqs, K, names, classesIn, nPseudo));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_microclass_Kmer_count", (DL_FUNC) &_microclass_Kmer_count, 4},
+    {"_microclass_Kmer_count_amino_acid", (DL_FUNC) &_microclass_Kmer_count_amino_acid, 3},
+    {"_microclass_Kmer_count_codon", (DL_FUNC) &_microclass_Kmer_count_codon, 3},
     {"_microclass_charToInt", (DL_FUNC) &_microclass_charToInt, 1},
+    {"_microclass_charToIntAminoAcid", (DL_FUNC) &_microclass_charToIntAminoAcid, 1},
+    {"_microclass_charToIntCodon", (DL_FUNC) &_microclass_charToIntCodon, 1},
     {"_microclass_multinomClassifyCpp", (DL_FUNC) &_microclass_multinomClassifyCpp, 5},
     {"_microclass_multinomTrainCpp", (DL_FUNC) &_microclass_multinomTrainCpp, 5},
+    {"_microclass_rdpClassifyCpp", (DL_FUNC) &_microclass_rdpClassifyCpp, 5},
+    {"_microclass_rdpTrainCpp", (DL_FUNC) &_microclass_rdpTrainCpp, 5},
     {NULL, NULL, 0}
 };
 

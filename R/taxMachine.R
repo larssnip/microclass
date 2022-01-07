@@ -106,9 +106,9 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
   # Create multinomial model if not available
   if(!do.load && !was.cached){
     if(verbose) cat("   creating model...\n")
-    # contax.trim <- NULL
-    # load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
-    # fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
+    contax.trim <- NULL
+    load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
+    fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
   }
   
   coef.bias <- coef.sd <- std.frame <- rprob.mat <- NULL
@@ -137,14 +137,14 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
     if(verbose) cat("   classifying sequence", min(idx), "to", max(idx), "\n")
     dfr <- multinomClassify(sequence[idx], fitted.model, post.prob = T)
     l <- sl[idx]
-    P1 <- (dfr$Post.prob.1 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
-    P2 <- (dfr$Post.prob.2 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
+    P1 <- (dfr$post_prob - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
+    P2 <- (dfr$post_prob_2 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
     Ds <- P1 - P2
-    idd <- as.integer(factor(dfr$Taxon.1, levels = std.frame[,1]))
+    idd <- as.integer(factor(dfr$taxon, levels = std.frame[,1]))
     Rs <- (P1 - std.frame[idd,2])/std.frame[idd,3]
     lst <- approx(rprob.mat[,1], rprob.mat[,2], xout = Rs, yleft = 0, yright = 1)
     
-    restab$Genus[idx] <- dfr$Taxon.1
+    restab$Genus[idx] <- dfr$taxon
     restab$D.score[idx] <- Ds
     restab$R.score[idx] <- Rs
     restab$P.recognized[idx] <- lst$y

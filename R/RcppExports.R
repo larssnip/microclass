@@ -5,8 +5,24 @@ Kmer_count <- function(seqs, K, names, codon) {
     .Call('_microclass_Kmer_count', PACKAGE = 'microclass', seqs, K, names, codon)
 }
 
+Kmer_count_amino_acid <- function(seqs, K, names) {
+    .Call('_microclass_Kmer_count_amino_acid', PACKAGE = 'microclass', seqs, K, names)
+}
+
+Kmer_count_codon <- function(seqs, K, names) {
+    .Call('_microclass_Kmer_count_codon', PACKAGE = 'microclass', seqs, K, names)
+}
+
 charToInt <- function(Seq) {
     .Call('_microclass_charToInt', PACKAGE = 'microclass', Seq)
+}
+
+charToIntAminoAcid <- function(Seq) {
+    .Call('_microclass_charToIntAminoAcid', PACKAGE = 'microclass', Seq)
+}
+
+charToIntCodon <- function(Seq) {
+    .Call('_microclass_charToIntCodon', PACKAGE = 'microclass', Seq)
 }
 
 multinomClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {
@@ -15,5 +31,13 @@ multinomClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {
 
 multinomTrainCpp <- function(seqs, K, names, classesIn, nPseudo) {
     .Call('_microclass_multinomTrainCpp', PACKAGE = 'microclass', seqs, K, names, classesIn, nPseudo)
+}
+
+rdpClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {
+    .Call('_microclass_rdpClassifyCpp', PACKAGE = 'microclass', seqs, K, QMat, Prior, posterior)
+}
+
+rdpTrainCpp <- function(seqs, K, names, classesIn, nPseudo) {
+    .Call('_microclass_rdpTrainCpp', PACKAGE = 'microclass', seqs, K, names, classesIn, nPseudo)
 }
 
