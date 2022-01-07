@@ -61,7 +61,7 @@ KmerCount <- function(sequences, K = 1, col.names = FALSE, type = "nucleotide"){
     X <- Kmer_count_amino_acid(int.list, K, col.names)
   }
   if(type == "codon"){
-    int.list <- charToIntCodon(translate(sequences))
+    int.list <- charToIntCodon(translate(sequences, codon=TRUE))
     if(K > 5)
       stop('Maximum value for K = 5')
     X <- Kmer_count_codon(int.list, K, col.names)
