@@ -5,6 +5,18 @@ Kmer_count <- function(seqs, K, names, codon) {
     .Call('_microclass_Kmer_count', PACKAGE = 'microclass', seqs, K, names, codon)
 }
 
+Kmer_count3 <- function(seqs, K, names, codon) {
+    .Call('_microclass_Kmer_count3', PACKAGE = 'microclass', seqs, K, names, codon)
+}
+
+Kmer_countGC <- function(seqs, K, names, codon) {
+    .Call('_microclass_Kmer_countGC', PACKAGE = 'microclass', seqs, K, names, codon)
+}
+
+Kmer_countGC3 <- function(seqs, K, names, codon) {
+    .Call('_microclass_Kmer_countGC3', PACKAGE = 'microclass', seqs, K, names, codon)
+}
+
 Kmer_count_amino_acid <- function(seqs, K, names) {
     .Call('_microclass_Kmer_count_amino_acid', PACKAGE = 'microclass', seqs, K, names)
 }
@@ -23,6 +35,10 @@ charToIntAminoAcid <- function(Seq) {
 
 charToIntCodon <- function(Seq) {
     .Call('_microclass_charToIntCodon', PACKAGE = 'microclass', Seq)
+}
+
+charToIntGC <- function(Seq) {
+    .Call('_microclass_charToIntGC', PACKAGE = 'microclass', Seq)
 }
 
 multinomClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {

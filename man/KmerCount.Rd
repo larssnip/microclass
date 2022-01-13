@@ -9,12 +9,12 @@ KmerCount(sequences, K = 1, col.names = FALSE, type = "nucleotide")
 \arguments{
 \item{sequences}{Vector of sequences (text).}
 
-\item{K}{Word length (integer).}
+\item{K}{Word length (integer >= 0, see Details).}
 
 \item{col.names}{Logical indicating if the words should be added as columns names.}
 
-\item{type}{Character selecting type of K-mer: "nucleotide" (default), "nucleotide 3" (skip 3), 
-"amino acid", "codon".}
+\item{type}{Character selecting type of K-mer: "nucleotide" (default), 
+"amino acid", "codon", "nucleotide x" (see Details).}
 }
 \value{
 A matrix with one row for each sequence in \code{sequences} and one column for 
@@ -25,14 +25,15 @@ Counting overlapping words of length K in DNA/RNA sequences.
 }
 \details{
 For each input sequence, the frequency of every word of length \code{K} is counted. 
-Counting is done with overlap. The counting itself is done by a C++ function.
+Counting is done with overlap by default. The counting itself is done by a C++ function.
+\code{K=0} is interpreted as AT/GC.
 
 With \code{col.names = TRUE} the K-mers are added as column names, but this makes the
 computations slower.
 
-Counting of nucleotide K-mers can be restricted to the reading frame starting at the first nucleotide
-by setting \code{type = "nucleotide 3"}, i.e. leading to a skip of 3 instead of 1 when moving 
-along the sequence.
+Counting of nucleotide K-mers can be restricted to a particular reading frame 
+by setting \code{type = "nucleotide 1"}, \code{type = "nucleotide 2"} or \code{type = "nucleotide 3"}, 
+i.e. leading to a skip of 3 instead of 1 when moving along the sequence.
 }
 \examples{
 # Nucleotides
@@ -45,6 +46,13 @@ KmerCount("ATGCCTGAACTGACCTGC", K = 1, col.names = TRUE, type = "amino acid")
 # Codons
 length(KmerCount("ATGCCTGAACTGACCTGC", K = 3, col.names = TRUE, type = "codon"))
 # 64^3 = 262144 for word length 3
+
+# AT/GC
+KmerCount("ATGCCTGAACTGACCTGC", K = 0, col.names = TRUE)
+
+# In-frame counting
+KmerCount("ATGCCTGAACTGACCTGC", K = 2, col.names = TRUE, type = "nucleotide 2") # 2-mer, 2nd reading frame
+KmerCount("ATGCCTGAACTGACCTGC", K = 0, col.names = TRUE, type = "nucleotide 3") # AT/GC, 3rd reading frame
 
 }
 \seealso{
