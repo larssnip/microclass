@@ -15,15 +15,15 @@ List charToIntCodon(CharacterVector Seq) {
     for(std::string::iterator it = seq[i].begin(), end = seq[i].end(); it != end; ++it) {
       acgt = *it;
       if(acgt > 64 && acgt < 91)       // A-Z
-        row.push_back(acgt-64);
+        row.push_back(acgt-65);
       else if(acgt > 96 && acgt < 123) // a-z
-        row.push_back(acgt-70);
+        row.push_back(acgt-71);
       else if(acgt > 47 && acgt < 58)  // 0-9
-        row.push_back(acgt+5);
+        row.push_back(acgt+4);
       else if(acgt == 45)              // -
-        row.push_back(63);
+        row.push_back(62);
       else if(acgt == 43)              // +
-        row.push_back(64);
+        row.push_back(63);
       else
         row.push_back(-1073741824); // -64^5
     }
