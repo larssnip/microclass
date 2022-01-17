@@ -1,16 +1,15 @@
 #' @name taxMachine
 #' @title Classifying 16S sequences
 #' 
-#' @description Optimized classification of 16S sequence data.
+#' @description Multinomial classification of 16S sequence data.
 #' 
 #' @param sequence Character vector with DNA sequences.
 #' @param model.in.memory Logical indicating if model should be cached in memory (default=TRUE).
 #' @param model.on.disk Logical or text, for reading/saving models, see Deatils below (default=FALSE).
 #' @param verbose Logical, if \code{TRUE} progress is reported during computations (default=TRUE).
 #' @param chunk.size The number of sequence to classify in each iteration of the loop (default=10000).
-
 #' 
-#' @details This function provides optimized taxonomy classifications from 16S sequence data.
+#' @details This function provides an optimized taxonomy classifications from 16S sequence data.
 #' 
 #' All sequences are classified to the genus level based on a Multinomial model (see \code{\link{multinomTrain}})
 #' trained on the designed consensus taxonomy data set \code{\link[microcontax]{contax.trim}} found in
@@ -21,8 +20,8 @@
 #' 
 #' If a path to an existing file with a trained model is supplied in \code{model.on.disk}, this Multinomial model is read
 #' from the file and used. If a path to a new file is supplied, the trained Multinomial model will be saved to that file.
-#' The default (\code{model.on.disk=FALSE}), means no files are read/saved, while \code{model.on.disk=TRUE} will attempt to load/save models from the
-#' \code{microclass/extdata} directory.
+#' The default (\code{model.on.disk=FALSE}), means no files are read/saved, while \code{model.on.disk=TRUE} will attempt
+#' to load/save models from the \code{microclass/extdata} directory.
 #' 
 #' Both \code{verbose} and \code{chunk.size} are used to monitor the progress, which is nice when classifying huge data sets,
 #' since this will take some time.
@@ -106,9 +105,9 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
   # Create multinomial model if not available
   if(!do.load && !was.cached){
     if(verbose) cat("   creating model...\n")
-    # contax.trim <- NULL
-    # load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
-    # fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
+    contax.trim <- NULL
+    load(file.path(path.package("microcontax"), "data/contax.trim.rda"))
+    fitted.model <- multinomTrain(contax.trim$Sequence, getGenus(contax.trim$Header), n.pseudo = n.pseudo)
   }
   
   coef.bias <- coef.sd <- std.frame <- rprob.mat <- NULL

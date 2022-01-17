@@ -39,6 +39,7 @@ kraken2_read_table <- function(krk.file, filter = TRUE){
   tbl <- fread(file = normalizePath(krk.file),
                sep = "\t",
                data.table = F,
+               quote = "",
                col.names = c("status", "read_id", "name", "length", "tax_count"))
   if(filter) tbl %>% filter(status == "C") -> tbl
   return(tbl)

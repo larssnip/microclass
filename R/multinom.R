@@ -6,13 +6,13 @@
 #' @param sequence Character vector of sequences.
 #' @param taxon Character vector of taxon labels for each sequence.
 #' @param K Word length (integer).
-#' @param col.names Logical indicating if column names should be added to the trained model matrix.
+#' @param col.names Logical indicating if column names (K-mers) should be added to the trained model matrix.
 #' @param n.pseudo Number of pseudo-counts to use (positive numerics, need not be integer). Special case -1
 #' will only return word counts, not log-probabilities.
 #' 
 #' @details The training step of the multinomial method (Vinje et al, 2015) means counting K-mers
 #' on all sequences and compute their multinomial probabilities for each taxon. 
-#' \code{n.pseudo} pseudo-counts are added, divided equally over all K-mers, before probabilities
+#' \code{n.pseudo} pseudo-counts are added equally to all K-mers, before probabilities
 #' are estimated. The optimal choice of \code{n.pseudo} will depend on \code{K} and the 
 #' training data set.
 #' 
@@ -40,7 +40,7 @@
 #' 
 #' @export multinomTrain
 #' 
-multinomTrain <- function(sequence, taxon, K = 4, col.names = FALSE, n.pseudo = 1){
+multinomTrain <- function(sequence, taxon, K = 5, col.names = FALSE, n.pseudo = 1.0){
   tax.int <- taxon
   if(is.character(taxon)){
     tax.int  <- factor(taxon)
@@ -59,6 +59,8 @@ multinomTrain <- function(sequence, taxon, K = 4, col.names = FALSE, n.pseudo = 
   attr(multinom.prob, "prior") <- prior
   return(multinom.prob)
 }
+
+
 
 #' @name multinomClassify
 #' @title Classifying with a Multinomial model

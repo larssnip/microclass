@@ -4,7 +4,7 @@
 \alias{multinomTrain}
 \title{Training multinomial model}
 \usage{
-multinomTrain(sequence, taxon, K = 4, col.names = FALSE, n.pseudo = 1)
+multinomTrain(sequence, taxon, K = 5, col.names = FALSE, n.pseudo = 1)
 }
 \arguments{
 \item{sequence}{Character vector of sequences.}
@@ -13,7 +13,7 @@ multinomTrain(sequence, taxon, K = 4, col.names = FALSE, n.pseudo = 1)
 
 \item{K}{Word length (integer).}
 
-\item{col.names}{Logical indicating if column names should be added to the trained model matrix.}
+\item{col.names}{Logical indicating if column names (K-mers) should be added to the trained model matrix.}
 
 \item{n.pseudo}{Number of pseudo-counts to use (positive numerics, need not be integer). Special case -1
 will only return word counts, not log-probabilities.}
@@ -32,7 +32,7 @@ Training the multinomial K-mer method on sequence data.
 \details{
 The training step of the multinomial method (Vinje et al, 2015) means counting K-mers
 on all sequences and compute their multinomial probabilities for each taxon. 
-\code{n.pseudo} pseudo-counts are added, divided equally over all K-mers, before probabilities
+\code{n.pseudo} pseudo-counts are added equally to all K-mers, before probabilities
 are estimated. The optimal choice of \code{n.pseudo} will depend on \code{K} and the 
 training data set.
 

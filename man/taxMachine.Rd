@@ -42,10 +42,10 @@ many sequencing errors that has destroyed the read, or a completely new taxon ne
 details.
 }
 \description{
-Optimized classification of 16S sequence data.
+Multinomial classification of 16S sequence data.
 }
 \details{
-This function provides optimized taxonomy classifications from 16S sequence data.
+This function provides an optimized taxonomy classifications from 16S sequence data.
 
 All sequences are classified to the genus level based on a Multinomial model (see \code{\link{multinomTrain}})
 trained on the designed consensus taxonomy data set \code{\link[microcontax]{contax.trim}} found in
@@ -56,8 +56,8 @@ This takes only a few seconds, and the result is cached for latter use if \code{
 
 If a path to an existing file with a trained model is supplied in \code{model.on.disk}, this Multinomial model is read
 from the file and used. If a path to a new file is supplied, the trained Multinomial model will be saved to that file.
-The default (\code{model.on.disk=FALSE}), means no files are read/saved, while \code{model.on.disk=TRUE} will attempt to load/save models from the
-\code{microclass/extdata} directory.
+The default (\code{model.on.disk=FALSE}), means no files are read/saved, while \code{model.on.disk=TRUE} will attempt
+to load/save models from the \code{microclass/extdata} directory.
 
 Both \code{verbose} and \code{chunk.size} are used to monitor the progress, which is nice when classifying huge data sets,
 since this will take some time.

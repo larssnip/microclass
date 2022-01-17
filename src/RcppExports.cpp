@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // Kmer_count
 IntegerMatrix Kmer_count(SEXP seqs, int K, bool names);
 RcppExport SEXP _microclass_Kmer_count(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP) {
