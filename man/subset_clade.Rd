@@ -4,7 +4,7 @@
 \alias{subset_clade}
 \title{Subset the taxonomy tree from the root}
 \usage{
-subset_clade(root_tax_id, nodes.dmp)
+subset_clade(root.tax.id, nodes.dmp)
 }
 \arguments{
 \item{root.tax.id}{the tax_id of the clade root (integer).}

@@ -1,18 +1,21 @@
-#' @name microCLR
+#' @name clr
 #' @title Centred log-ratio transform
 #' 
-#' @description Transforms readcount-matrix with the centered log-ratio transform.
+#' @description Transforms readcount-matrix with Aitchisons transform.
 #' 
-#' @usage microCLR(readcount.mat, n.pseudo = 0)
+#' @usage clr(readcount.mat, n.pseudo = 1)
 #' 
 #' @param readcount.mat matrix with readcount data.
 #' @param n.pseudo number of pseudo-readcounts to add.
 #' 
 #' @details This is a standard implementation of the Aitchisons centered log-ratio
-#' transform (Aitchison 1986) for compositional data. Readcount data can be seen as compositonal data
-#' since the total number of readcounts in a sample does not carry information, but is simply
+#' transform (Aitchison 1986) for compositional data. Readcount data can be seen as compositional data
+#' since the total number of readcounts in a sample does not carry any information, but is simply
 #' an effect of sequencing depth. Thus, the information in the data lies in the relative 
 #' values, not the absolute.
+#' 
+#' The \code{readcount.mat} must have the samples in the rows and the taxa (or genes) in the
+#' columns. Transpose if necessary.
 #' 
 #' By transforming such data with this function, you get data who are better suited for a
 #' number of downstream analyses, e.g. typically analyses making use of sum-of-squares type of
@@ -26,21 +29,18 @@
 #' 
 #' @examples
 #' 
-#' @export microCLR
+#' @export clr
 #' 
-microCLR <- function(readcount.mat, n.pseudo = 0){
-  readcount.mat <- readcount.mat + n.pseudo
-  library.size <- rowSums(readcount.mat)
-  X <- readcount.mat / library.size
-  if(n.pseudo > 0){
-    g <- apply(X, 1, function(x){mean(log(x))})
-    X <- log(X) - g
-  }
-  rownames(X) <- rownames(readcount.mat)
-  colnames(X) <- colnames(readcount.mat)
-  attr(X, "library.size") <- library.size
-  return(X)
+clr <- function(readcount.mat, n.pseudo = 1){
+  clr.mat <- readcount.mat + n.pseudo
+  library.size <- rowSums(clr.mat)
+  lc <- log(clr.mat)
+  clr.mat <- lc - rowMeans(lc)
+  attr(clr.mat, "library.size") <- library.size
+  return(clr.mat)
 }
+
+
 
 
 # # The matrix read.counts must have

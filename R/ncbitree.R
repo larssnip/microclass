@@ -3,8 +3,6 @@
 #' 
 #' @description Retrieves a clade from the taxonomy tree.
 #' 
-#' @usage subset_clade(root_tax_id, nodes.dmp)
-#' 
 #' @param root.tax.id the tax_id of the clade root (integer).
 #' @param nodes.dmp a nodes.dmp table.
 #' 
