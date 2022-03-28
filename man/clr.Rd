@@ -24,7 +24,7 @@ since the total number of readcounts in a sample does not carry any information,
 an effect of sequencing depth. Thus, the information in the data lies in the relative 
 values, not the absolute.
 
-The \code{readcount.mat} must have the samples in the rows and the taxa (or genes) in the
+The \code{readcount.mat} must have the samples in the rows and the taxa in the
 columns. Transpose if necessary.
 
 By transforming such data with this function, you get data who are better suited for a

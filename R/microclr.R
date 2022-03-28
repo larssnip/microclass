@@ -14,7 +14,7 @@
 #' an effect of sequencing depth. Thus, the information in the data lies in the relative 
 #' values, not the absolute.
 #' 
-#' The \code{readcount.mat} must have the samples in the rows and the taxa (or genes) in the
+#' The \code{readcount.mat} must have the samples in the rows and the taxa in the
 #' columns. Transpose if necessary.
 #' 
 #' By transforming such data with this function, you get data who are better suited for a
@@ -40,7 +40,7 @@ clr <- function(readcount.mat, n.pseudo = 1){
   return(clr.mat)
 }
 
-#' @name rarify
+#' @name rarefy
 #' @title Rarefying readcounts
 #' 
 #' @description Down-sampling readcounts to equal depths.
@@ -48,12 +48,13 @@ clr <- function(readcount.mat, n.pseudo = 1){
 #' @usage rarefy(readcount.mat, depth = NULL)
 #' 
 #' @param readcount.mat matrix with readcount data.
-#' @param depth fixed number of reads in each sample.
+#' @param depth fixed number of reads in each sample after.
 #' 
-#' @details To rarify readcounts means down-sampling the data in all samples to 
-#' a fixed read depth. This is sometimes done prior to some diversity analyses,
+#' @details To rarefy readcounts means down-sampling the data in all samples to 
+#' a fixed target read depth. This is sometimes done prior to some diversity analyses,
 #' the idea being that some taxa are absent due to low depth, and this will bias
-#' diversity estimates.
+#' diversity estimates. After the use \code{rarefy} all samples have equal 
+#' (low) depth.
 #' 
 #' If \code{depth = NULL} the smallest readcount among the samples is used as the
 #' target \code{depth}, but the user may supply any other positive integer value.
@@ -61,7 +62,7 @@ clr <- function(readcount.mat, n.pseudo = 1){
 #' will be up-sampled. This means they will get more reads for the taxa where they
 #' already have reads, but still no reads for the absent taxa. 
 #' 
-#' The \code{readcount.mat} must have the samples in the rows and the taxa (or genes) in the
+#' The \code{readcount.mat} must have the samples in the rows and the taxa in the
 #' columns. Transpose if necessary.
 #' 
 #' This function minimizes the variance in the down-sampling as follows:
@@ -76,14 +77,16 @@ clr <- function(readcount.mat, n.pseudo = 1){
 #' on the same data.
 #' 
 #' @return A matrix of same size as the input, but with down-sampled readcounts.
+#' This matrix has an attribute \code{"original.depth"} with the original depths
+#' for each sample.
 #' 
 #' @author Lars Snipen.
 #' 
 #' @examples
 #' 
-#' @export rarify
+#' @export rarefy
 #' 
-rarify <- function(read.counts, depth = NULL){
+rarefy <- function(read.counts, depth = NULL){
   N <- nrow(read.counts)
   P <- ncol(read.counts)
   samp.depths <- rowSums(read.counts)
@@ -107,6 +110,7 @@ rarify <- function(read.counts, depth = NULL){
     }
     X[ss,] <- counts + rest
   }
+  attr(X, "original.depth") <- samp.depths
   return(X)
 }
 
