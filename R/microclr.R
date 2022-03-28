@@ -40,6 +40,79 @@ clr <- function(readcount.mat, n.pseudo = 1){
   return(clr.mat)
 }
 
+#' @name rarify
+#' @title Rarefying readcounts
+#' 
+#' @description Down-sampling readcounts to equal depths.
+#' 
+#' @usage rarefy(readcount.mat, depth = NULL)
+#' 
+#' @param readcount.mat matrix with readcount data.
+#' @param depth fixed number of reads in each sample.
+#' 
+#' @details To rarify readcounts means down-sampling the data in all samples to 
+#' a fixed read depth. This is sometimes done prior to some diversity analyses,
+#' the idea being that some taxa are absent due to low depth, and this will bias
+#' diversity estimates.
+#' 
+#' If \code{depth = NULL} the smallest readcount among the samples is used as the
+#' target \code{depth}, but the user may supply any other positive integer value.
+#' Note: If \code{depth} is larger than the minimum readcount, some samples
+#' will be up-sampled. This means they will get more reads for the taxa where they
+#' already have reads, but still no reads for the absent taxa. 
+#' 
+#' The \code{readcount.mat} must have the samples in the rows and the taxa (or genes) in the
+#' columns. Transpose if necessary.
+#' 
+#' This function minimizes the variance in the down-sampling as follows:
+#' For sample \code{i}, we first compute the expected readcount given target 
+#' \code{depth}. Let
+#' \code{Ecount = depth * read.counts[i,]/sum(read.counts[i,])}. From this we get
+#' the base count \code{base.count = floor(Ecount)}. The remainder is 
+#' \code{remainder = Ecount - base.count}. The remaining reads 
+#' \code{R = depth - sum(base.count)} are finally distributed over 
+#' the taxa using the \code{remainder} as the probabilities. Thus, only the 
+#' latter (few) reads will vary randomly between repeated use of this function
+#' on the same data.
+#' 
+#' @return A matrix of same size as the input, but with down-sampled readcounts.
+#' 
+#' @author Lars Snipen.
+#' 
+#' @examples
+#' 
+#' @export rarify
+#' 
+rarify <- function(read.counts, depth = NULL){
+  N <- nrow(read.counts)
+  P <- ncol(read.counts)
+  samp.depths <- rowSums(read.counts)
+  if(is.null(depth)){
+    depth <- min(samp.depths)
+  }
+  X <- matrix(0, nrow = N, ncol = P)
+  taxa <- colnames(read.counts)
+  samples <- rownames(read.counts)
+  colnames(X) <- taxa
+  rownames(X) <- samples
+  cfac <- factor(1:P)
+  for(ss in 1:nrow(read.counts)){
+    Ecounts <- depth * read.counts[ss,] / samp.depths[ss]
+    counts <- floor(Ecounts)
+    remainder <- Ecounts - counts
+    if(max(remainder) == 0){
+      rest <- rep(0, P)
+    } else {
+      rest <- table(sample(cfac, size = depth - sum(counts), replace = T, prob = remainder))
+    }
+    X[ss,] <- counts + rest
+  }
+  return(X)
+}
+
+
+
+
 
 
 
@@ -50,42 +123,15 @@ clr <- function(readcount.mat, n.pseudo = 1){
 #   X.rank <- apply(read.counts, 2, rank, ties.method = "min")
 #   X.sorted <- apply(read.counts, 2, sort)
 #   x.mean <- rowMeans(X.sorted)
-#   
+# 
 #   i2m <- function(index, mean){
 #     return(mean[index])
 #   }
-#   
+# 
 #   X.final <- apply(X.rank, 2, function(idx){x.mean[idx]})
 #   rownames(X.final) <- rownames(read.counts)
 #   return(X.final)
 # }
-# 
-# 
-# # The matrix read.counts must have
-# # - samples in the rows
-# # - clusters in the columns
-# rarify <- function(read.counts, depth = NULL){
-#   N <- nrow(read.counts)
-#   P <- ncol(read.counts)
-#   samp.depths <- floor(rowSums(read.counts)) - 1
-#   if(is.null(depth)){
-#     depth <- min(samp.depths)
-#   }
-#   X <- matrix(NA, nrow = N, ncol = P)
-#   clst <- colnames(read.counts)
-#   samp <- rownames(read.counts)
-#   colnames(X) <- clst
-#   rownames(X) <- samp
-#   for(ss in 1:nrow(read.counts)){
-#     if(samp.depths[ss] >= depth){
-#       svec <- unlist(lapply(1:P, function(i){rep(clst[i], read.counts[ss,i])}))
-#       reads <- sample(svec, size = depth, replace = F)
-#       X[ss,] <- table(factor(reads, levels = clst))
-#     }
-#   }
-#   return(X)
-# }
-# 
 # 
 # # The matrix read.counts must have
 # # - samples in the rows
