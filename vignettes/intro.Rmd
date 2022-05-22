@@ -28,14 +28,14 @@ KmerCount("ATGCCTGAACTGACCTGC", K = 3, col.names = TRUE)
 The quickest way to perform prokaryote classification is through the `taxMachine`. It is a genus level
 classification methods based on the multinomial method, trained on the `microcontax` data set.
 
-```{r}
+```{r, eval=F}
 library(microcontax)
 data(small.16S)
 tax.tab <- taxMachine(small.16S$Sequence)
 head(tax.tab)
 ```
 
-```{r}
+```{r, eval=F}
 genus <- sapply(strsplit(small.16S$Header,split=" "),function(x){x[2]})
 cat("Number of errors:", sum(genus != tax.tab$Genus))
 ```
@@ -50,7 +50,7 @@ The number of processing cores to be used is controlled by the `setParallel()` c
 All input sequences are given a classification by the `taxMachine()`, but some may be very uncertain.
 The `taxMachine()` also calculates two types of uncertainties: the `D.score` and the `R.score`. A small `D.score` (close to 0, less than 1) indicates an uncertain result because the sequence is also very similar to another genus, i.e. its posterior probability is almost equal for two different genera. The `R.score` indicates if the sequence is very different from any previously seen sequence, and the more negative the `R.score`, the more 'alien' the sequence is to the `taxMachine`.
 
-```{r, fig.cap = "Classification uncertainty scores"}
+```{r, fig.cap = "Classification uncertainty scores", eval=F}
 par(mfrow = c(1,2), mar = c(2.5,2,3,1))
 boxplot(tax.tab$D.score, factor(genus), main = "D-score")
 boxplot(tax.tab$R.score, factor(genus), main = "R-score")
@@ -58,7 +58,7 @@ boxplot(tax.tab$R.score, factor(genus), main = "R-score")
 
 Along with each `R.score` value is also a `P.recognized` value. This is simply the probability that one of the training data sequences get an `R.score` of the same value, or lower. It is perhaps easier to interpret than the score itself. We typically use this to mark some sequences as unrecognized, and risky to include in further analyses:
 
-```{r}
+```{r, eval=F}
 tax.tab$Is.Recognized <- tax.tab$P.recognized>0.01
 tax.tab[35:45,]
 ```
@@ -74,7 +74,7 @@ different training data set, or using different parameters, the RDP and multinom
 The following example uses half the `small.16` data set to train an RDP model and then tries
 to classify the other half of the data.
 
-```{r}
+```{r, eval=F}
 rdp <- rdpTrain(small.16S$Sequence[seq(1,71,2)], genus[seq(1,71,2)])  # training step
 predicted <- rdpClassify(small.16S$Sequence[seq(2,71,2)], rdp)        # classification step
 cat( "Number of errors:", sum(predicted != genus[seq(2,71,2)]) )
