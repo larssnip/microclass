@@ -1,0 +1,22 @@
+---
+title: "The microclass package"
+output: 
+  github_document:
+    html_preview: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# Installation
+This R package contains some functions for working with prokaryotic taxonomy.
+
+Install the package from GitHub by
+```{r, eval=FALSE}
+if(!require(devtools)) install.packages("devtools")
+devtools::install_github("larssnip/microclass")
+```
+
