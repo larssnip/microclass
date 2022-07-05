@@ -26,12 +26,6 @@ to prune them all to have the same set of ranks. Ranks may be missing in some br
 will then fill in NA in these cells, ensuring all branches have the exact same ranks in the exact same
 ordering. This is convenient for turning the list into a table, using \code{\link{as_tibble}}.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Lars Snipen.
 }

@@ -36,12 +36,6 @@ inside this function. The ranks specified in \code{ranks} are the columns in the
 
 The function \code{branch_table2list} converts back again, i.e. from a table to a list.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Lars Snipen.
 }

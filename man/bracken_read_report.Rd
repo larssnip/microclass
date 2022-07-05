@@ -32,9 +32,6 @@ the \code{-o} option.
 Note that by the \code{-w} option \code{bracken} will output a report in
 \code{kraken2} format, see \code{\link{kraken2_read_report}}.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{kraken2_read_report}}.
 }

@@ -46,9 +46,6 @@ the taxa using the \code{remainder} as the probabilities. Thus, only the
 latter (few) reads will vary randomly between repeated use of this function
 on the same data.
 }
-\examples{
-
-}
 \author{
 Lars Snipen.
 }

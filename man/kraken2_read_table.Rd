@@ -32,9 +32,6 @@ Note that in most cases only the report, produced by running \code{kraken2} with
 the \code{--report} otpion, is what you want. Then use the function 
 \code{\link{kraken2_read_report}}.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{kraken2_read_report}}.
 }

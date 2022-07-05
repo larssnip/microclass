@@ -28,9 +28,6 @@ ending a branch.
 
 Multiple leaves may be given as argument, resulting in multiple branches retrieved.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{branch_taxid2name}}, \code{\link{subset_clade}}.
 }

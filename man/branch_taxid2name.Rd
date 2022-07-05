@@ -36,12 +36,6 @@ occurrence of the name_txt is used. You are responsible for using a \code{names.
 
 See \code{\link{read_names_dmp}} for more about \code{names.dmp} tables.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Lars Snipen.
 }

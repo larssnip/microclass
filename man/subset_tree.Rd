@@ -23,9 +23,6 @@ This function retrieves a sub-tree by starting at the vector of specified
 \code{leaf_tax_id} and collect all branches ending at these nodes. Thus, it will in general
 not be a clade. If you want to subset an entire clade, see \code{\link{subset_clade}}.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{read_nodes_dmp}}, \code{\link{subset_clade}}.
 }

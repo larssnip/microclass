@@ -24,9 +24,6 @@ table \code{nodes.dmp} (see \code{\link{read_nodes_dmp}}). The clade starts at t
 
 If you want to subset the taxonomy tree based on leaf nodes, see \code{\link{subset_tree}}.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{read_nodes_dmp}}, \code{\link{subset_tree}}.
 }

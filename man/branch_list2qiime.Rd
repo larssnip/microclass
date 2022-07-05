@@ -29,12 +29,6 @@ NOTE 1: This is only meaningful if the \code{branch.lst} contains names instead 
 NOTE 2: The ranks are fixed to the ones listed above, where domain is the same as superkingdom in
 the NCBI taxonomy.
 }
-\examples{
-
-}
-\seealso{
-
-}
 \author{
 Lars Snipen.
 }

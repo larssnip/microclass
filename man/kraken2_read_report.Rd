@@ -30,9 +30,6 @@ option to get this convenient summary table.
 
 Note that the software \code{bracken} may also output a report in this format.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{kraken2_read_table}}, \code{\link{bracken_read_report}}.
 }

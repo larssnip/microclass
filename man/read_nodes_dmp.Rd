@@ -32,9 +32,6 @@ The \code{nodes.dmp} table downloaded from NCBI will contain many columns, but o
 are relevant for parsing the taxonomy tree. Only these first three columns are read and used by these functions,
 additional columns are ignored.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{read_nodes_dmp}}.
 }

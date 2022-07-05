@@ -38,9 +38,6 @@ be an integer. The rationale behind this is that we a priori assume a uniform
 distribution of the taxa, and the more pseudo-counts you add, the more weight 
 you give to this prior.
 }
-\examples{
-
-}
 \references{
 Aitchison J. The Statistical Analysis of Compositional Data. London, UK: Chapman & Hall; 1986.
 }

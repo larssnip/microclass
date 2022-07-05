@@ -28,9 +28,6 @@ database (https://www.ncbi.nlm.nih.gov/taxonomy/). This is represented as a \cod
 The \code{write_names_dmp} will write a table with the proper columns (see below) to a file, adding 
 the separators of the NCBI format.
 }
-\examples{
-
-}
 \seealso{
 \code{\link{read_nodes_dmp}}.
 }
