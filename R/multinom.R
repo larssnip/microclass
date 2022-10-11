@@ -138,6 +138,8 @@ multinomClassify <- function(sequence, multinom.prob, post.prob = FALSE, prior =
     probs <- (exp(adjusted))/(rowSums(exp(adjusted)))
     probs[probs < 1e-10] = 0
     probs[probs > 1-1e-10] = 1
+    colnames(probs) = rownames(multinom.prob)
+    rownames(probs) = sequence
     probsmat <- Matrix::Matrix(probs,sparse=TRUE)
     return(probsmat)
   } else {
