@@ -20,7 +20,7 @@ Imports:
   Rcpp (>= 0.11.1), RcppParallel, tibble
 LinkingTo: Rcpp (>= 0.11.1), RcppEigen, RcppParallel
 SystemRequirements: GNU make
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

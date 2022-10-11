@@ -51,15 +51,16 @@ clr <- function(readcount.mat, n.pseudo = 1, per.sample = FALSE){
   return(clr.mat)
 }
 
-#' @name rarefy
+#' @name minvarar
 #' @title Rarefying readcounts
 #' 
-#' @description Down-sampling readcounts to equal depths.
+#' @description Down-sampling readcounts with minim um variance to equal depths.
 #' 
 #' @usage rarefy(readcount.mat, depth = NULL)
 #' 
 #' @param readcount.mat matrix with readcount data.
 #' @param depth fixed number of reads in each sample after.
+#' @param rngseed Random generator seed, for reproducibility.
 #' 
 #' @details To rarefy readcounts means down-sampling the data in all samples to 
 #' a fixed target read depth. This is sometimes done prior to some diversity analyses,
@@ -78,7 +79,7 @@ clr <- function(readcount.mat, n.pseudo = 1, per.sample = FALSE){
 #' 
 #' This function minimizes the variance in the down-sampling as follows:
 #' For sample \code{i}, we first compute the expected readcount given target 
-#' \code{depth}. Let
+#' \code{depth}. This is
 #' \code{Ecount = depth * read.counts[i,]/sum(read.counts[i,])}. From this we get
 #' the base count \code{base.count = floor(Ecount)}. The remainder is 
 #' \code{remainder = Ecount - base.count}. The remaining reads 
@@ -95,9 +96,10 @@ clr <- function(readcount.mat, n.pseudo = 1, per.sample = FALSE){
 #' 
 #' @examples
 #' 
-#' @export rarefy
+#' @export minvarar
 #' 
-rarefy <- function(read.counts, depth = NULL){
+minvarar <- function(read.counts, depth = NULL, rngseed = 12345){
+  set.seed(rngseed)
   N <- nrow(read.counts)
   P <- ncol(read.counts)
   samp.depths <- rowSums(read.counts)
@@ -124,37 +126,3 @@ rarefy <- function(read.counts, depth = NULL){
   attr(X, "original.depth") <- samp.depths
   return(X)
 }
-
-
-
-
-
-
-
-# # The matrix read.counts must have
-# # - samples in the rows
-# # - clusters in the columns
-# quantileNormalize <- function(read.counts){
-#   X.rank <- apply(read.counts, 2, rank, ties.method = "min")
-#   X.sorted <- apply(read.counts, 2, sort)
-#   x.mean <- rowMeans(X.sorted)
-# 
-#   i2m <- function(index, mean){
-#     return(mean[index])
-#   }
-# 
-#   X.final <- apply(X.rank, 2, function(idx){x.mean[idx]})
-#   rownames(X.final) <- rownames(read.counts)
-#   return(X.final)
-# }
-# 
-# # The matrix read.counts must have
-# # - samples in the rows
-# # - clusters in the columns
-# rarE <- function(read.counts, depth = NULL){
-#   if(is.null(depth)){
-#     depth <- min(rowSums(read.counts))
-#   }
-#   X <- round(depth * microCLR(read.counts, C = 0))
-#   return(X)
-# }
