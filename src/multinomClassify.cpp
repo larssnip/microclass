@@ -117,8 +117,51 @@ struct KmerProdPost_worker : public Worker {
   }
 };
 
+struct KmerProdMat_worker : public Worker {
+  
+  std::vector<std::vector<int> > Seqs;
+  int K;
+  std::vector<int> Where;
+  RMatrix<double> Qmat;
+  RVector<double> prior;
+  RMatrix<double> ProbMat;
+  
+  KmerProdMat_worker(const std::vector<std::vector<int> > Seqs, const int K,
+                  const std::vector<int> Where, const RMatrix<double> Qmat, const RVector<double> prior, RMatrix<double> ProbMat)
+    : Seqs(Seqs), K(K), Where(Where), Qmat(Qmat), prior(prior), ProbMat(ProbMat) { }
+  
+  void operator()(std::size_t begin_row, std::size_t end_row) {
+    
+    for (std::size_t i = begin_row; i < end_row; i++) {
+      
+      std::vector<double> X(prior.size());
+      for(unsigned int j=0; j<prior.size(); j++){
+        X[j] = prior[j];           // Accumulation matrix
+      }
+      int num_substr = Seqs[i].size()-K+1;      // antall ord av lengde K i sekvens i
+      int where = 0;
+      for( int j=0; j<num_substr; j++ ) {       // looper over alle ord
+        where = 0;
+        for( int k=0; k<K; k++){                // looper over posisjon i ord
+          where += Seqs[i][j+k]*Where[k];       // where blir kolonnen til ordet i X, beregnet i 4-talls systemet
+        }                                       // dette er alltid et tall fra 0 til (4^K)-1, med mindre
+        if(where >= 0){                         // ett av elementene i sekvensen har verdien -4^K, da blir
+          for(unsigned int j=0; j<Qmat.nrow(); j++){
+            X[j] += Qmat(j,where);
+          }
+        }
+      }
+      
+      for (unsigned int j=0; j < X.size(); j++){
+        ProbMat(i,j) = X[j];
+      }
+      
+    }
+  }
+};
+
 // [[Rcpp::export]]
-List multinomClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior){
+List multinomClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior, bool fullmat){
   // Convert input from R list to vector of vectors
   std::vector<std::vector<int> > Seqs = Rcpp::as< std::vector<std::vector<int> > >(seqs);
   int num_strings = Seqs.size();
@@ -143,6 +186,14 @@ List multinomClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Pri
     parallelFor(0, num_strings, kmerprodpost_worker);
     return Rcpp::List::create(Rcpp::Named("first_ind") = first_ind, Rcpp::Named("first") = first,
                               Rcpp::Named("second_ind") = second_ind, Rcpp::Named("second") = second);
+  } else if (fullmat){
+    NumericMatrix probmat(num_strings,QMat.nrow());  // Result matrix 1
+    RMatrix<double> ProbMat(probmat);
+    
+    KmerProdMat_worker kmerprodmat_worker(Seqs, K, Where, Qmat, prior, ProbMat);
+    parallelFor(0, num_strings, kmerprodmat_worker);
+    return Rcpp::List::create(Rcpp::Named("ProbMat") = probmat);
+    
   } else {
     KmerProd_worker kmerprod_worker(Seqs, K, Where, Qmat, prior, First_ind);
     parallelFor(0, num_strings, kmerprod_worker);

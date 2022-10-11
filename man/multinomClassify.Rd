@@ -4,7 +4,13 @@
 \alias{multinomClassify}
 \title{Classifying with a Multinomial model}
 \usage{
-multinomClassify(sequence, multinom.prob, post.prob = FALSE, prior = FALSE)
+multinomClassify(
+  sequence,
+  multinom.prob,
+  post.prob = FALSE,
+  prior = FALSE,
+  full.post.prob = FALSE
+)
 }
 \arguments{
 \item{sequence}{Character vector of sequences to classify.}
@@ -15,6 +21,8 @@ multinomClassify(sequence, multinom.prob, post.prob = FALSE, prior = FALSE)
 
 \item{prior}{Logical indicating if classification should be done by flat priors (default)
 or with empirical priors.}
+
+\item{full.post.prob}{Logical indicating if full posterior probability matrix should be returned.}
 }
 \value{
 If \code{post.prob = FALSE} a character vector of predicted taxa is returned.

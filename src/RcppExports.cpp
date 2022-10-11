@@ -36,8 +36,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // multinomClassifyCpp
-List multinomClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior);
-RcppExport SEXP _microclass_multinomClassifyCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP QMatSEXP, SEXP PriorSEXP, SEXP posteriorSEXP) {
+List multinomClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior, bool fullmat);
+RcppExport SEXP _microclass_multinomClassifyCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP QMatSEXP, SEXP PriorSEXP, SEXP posteriorSEXP, SEXP fullmatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -46,7 +46,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericMatrix >::type QMat(QMatSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type Prior(PriorSEXP);
     Rcpp::traits::input_parameter< bool >::type posterior(posteriorSEXP);
-    rcpp_result_gen = Rcpp::wrap(multinomClassifyCpp(seqs, K, QMat, Prior, posterior));
+    Rcpp::traits::input_parameter< bool >::type fullmat(fullmatSEXP);
+    rcpp_result_gen = Rcpp::wrap(multinomClassifyCpp(seqs, K, QMat, Prior, posterior, fullmat));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -69,7 +70,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_microclass_Kmer_count", (DL_FUNC) &_microclass_Kmer_count, 3},
     {"_microclass_charToInt", (DL_FUNC) &_microclass_charToInt, 1},
-    {"_microclass_multinomClassifyCpp", (DL_FUNC) &_microclass_multinomClassifyCpp, 5},
+    {"_microclass_multinomClassifyCpp", (DL_FUNC) &_microclass_multinomClassifyCpp, 6},
     {"_microclass_multinomTrainCpp", (DL_FUNC) &_microclass_multinomTrainCpp, 5},
     {NULL, NULL, 0}
 };
