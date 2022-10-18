@@ -72,6 +72,7 @@ multinomTrain <- function(sequence, taxon, K = 5, col.names = FALSE, n.pseudo = 
 #' @param post.prob Logical indicating if posterior log-probabilities should be returned.
 #' @param prior Logical indicating if classification should be done by flat priors (default)
 #' or with empirical priors.
+#' @param full.post.prob Logical indicating if full posterior probability matrix should be returned.
 #' 
 #' @details The classification step of the multinomial method (Vinje et al, 2015) means counting 
 #' K-mers on all sequences, and computing the posterior probabilities for each
@@ -118,17 +119,29 @@ multinomTrain <- function(sequence, taxon, K = 5, col.names = FALSE, n.pseudo = 
 #' 
 #' @export multinomClassify
 #' 
-multinomClassify <- function(sequence, multinom.prob, post.prob = FALSE, prior = FALSE){
+multinomClassify <- function(sequence, multinom.prob, post.prob = FALSE, prior = FALSE, full.post.prob = FALSE){
   int.list <- charToInt(sequence)
   if(prior){
     priors <- log2(attr(multinom.prob, "prior"))
   } else {
     priors <- rep(0, nrow(multinom.prob))
   }
-  X <- multinomClassifyCpp(int.list, log(ncol(multinom.prob), 4), multinom.prob, priors, post.prob)
+  X <- multinomClassifyCpp(int.list, log(ncol(multinom.prob), 4), multinom.prob, priors, post.prob, full.post.prob)
   if(post.prob){
     return(data.frame(taxon = rownames(multinom.prob)[X$first_ind], post_prob = X$first,
                       post_prob_2 = X$second, stringsAsFactors = FALSE))
+  } else if (full.post.prob){
+    logprobs <- X$ProbMat
+    const <- 700-apply(logprobs,1,max)
+    adjusted <- logprobs+const # add a constant (to be canceled out) to log-posterior to avoid numerical issues.
+    adjusted[adjusted < -700] = -700
+    probs <- (exp(adjusted))/(rowSums(exp(adjusted)))
+    probs[probs < 1e-10] = 0
+    probs[probs > 1-1e-10] = 1
+    colnames(probs) = rownames(multinom.prob)
+    rownames(probs) = sequence
+    probsmat <- Matrix::Matrix(probs,sparse=TRUE)
+    return(probsmat)
   } else {
     return(rownames(multinom.prob)[X$first_ind])
   }

@@ -15,7 +15,8 @@ Depends:
     data.table,
     dplyr,
     stringr,
-    rlang
+    rlang,
+    Matrix
 Imports:
   Rcpp (>= 0.11.1), RcppParallel, tibble
 LinkingTo: Rcpp (>= 0.11.1), RcppEigen, RcppParallel
