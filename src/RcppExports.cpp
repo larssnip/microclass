@@ -66,12 +66,44 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rdpClassifyCpp
+List rdpClassifyCpp(List seqs, int K, NumericMatrix QMat, NumericVector Prior, bool posterior);
+RcppExport SEXP _microclass_rdpClassifyCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP QMatSEXP, SEXP PriorSEXP, SEXP posteriorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type QMat(QMatSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type Prior(PriorSEXP);
+    Rcpp::traits::input_parameter< bool >::type posterior(posteriorSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdpClassifyCpp(seqs, K, QMat, Prior, posterior));
+    return rcpp_result_gen;
+END_RCPP
+}
+// rdpTrainCpp
+SEXP rdpTrainCpp(List seqs, int K, bool names, List classesIn, double nPseudo);
+RcppExport SEXP _microclass_rdpTrainCpp(SEXP seqsSEXP, SEXP KSEXP, SEXP namesSEXP, SEXP classesInSEXP, SEXP nPseudoSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type seqs(seqsSEXP);
+    Rcpp::traits::input_parameter< int >::type K(KSEXP);
+    Rcpp::traits::input_parameter< bool >::type names(namesSEXP);
+    Rcpp::traits::input_parameter< List >::type classesIn(classesInSEXP);
+    Rcpp::traits::input_parameter< double >::type nPseudo(nPseudoSEXP);
+    rcpp_result_gen = Rcpp::wrap(rdpTrainCpp(seqs, K, names, classesIn, nPseudo));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_microclass_Kmer_count", (DL_FUNC) &_microclass_Kmer_count, 3},
     {"_microclass_charToInt", (DL_FUNC) &_microclass_charToInt, 1},
     {"_microclass_multinomClassifyCpp", (DL_FUNC) &_microclass_multinomClassifyCpp, 6},
     {"_microclass_multinomTrainCpp", (DL_FUNC) &_microclass_multinomTrainCpp, 5},
+    {"_microclass_rdpClassifyCpp", (DL_FUNC) &_microclass_rdpClassifyCpp, 5},
+    {"_microclass_rdpTrainCpp", (DL_FUNC) &_microclass_rdpTrainCpp, 5},
     {NULL, NULL, 0}
 };
 

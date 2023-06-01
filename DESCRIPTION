@@ -22,6 +22,9 @@ Imports:
 LinkingTo: Rcpp (>= 0.11.1), RcppEigen, RcppParallel
 SystemRequirements: GNU make
 RoxygenNote: 7.2.1
-Suggests: knitr,
-    rmarkdown
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3

@@ -42,7 +42,7 @@ cat("Number of errors:", sum(genus != tax.tab$Genus))
 Notice that a model is created and cached in memory the first time you call `taxMachine()` in a session. This is to avoid storing a huge matrix. The next call to `taxMachine()` in this session will be (much) faster, since it will re-use the created model.
 
 
-### Parallell computing
+### Parallel computing
 The number of processing cores to be used is controlled by the `setParallel()` command. The default is to used all available cores (logical and physical). Please remember to set this prior to a call if you run this on a computing cluster!
 
 
