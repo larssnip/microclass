@@ -78,7 +78,7 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
   do.load <- do.save <- FALSE
   if(is.character(model.on.disk) | (is.logical(model.on.disk) && model.on.disk)){
     if(is.logical(model.on.disk)){
-        model.on.disk <- file.path(path.package("microclass"), "extdata/model100.rda") 
+        model.on.disk <- system.file("extdata", "model100.rda", package = "microclass") 
     }
     if(file.exists(model.on.disk)){
       load(model.on.disk)
@@ -111,10 +111,10 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
   }
   
   coef.bias <- coef.sd <- std.frame <- rprob.mat <- NULL
-  load(file.path(path.package("microclass"), "extdata/norm.models.rda"))
-  load(file.path(path.package("microclass"), "extdata/std.frame.rda" ) )
-  load(file.path(path.package("microclass"), paste0("extdata/rprob.mat.", ml, ".rda")))
-  
+  load(system.file("extdata", "norm.models.rda", package = "microclass"))
+  load(system.file("extdata", "std.frame.rda", package = "microclass"))
+  load(system.file("extdata", paste0("rprob.mat.", ml, ".rda"), package = "microclass"))
+
   
   # Save multinomial model for later use
   if(do.save){
@@ -136,14 +136,14 @@ taxMachine <- function(sequence, model.in.memory = TRUE, model.on.disk = FALSE,
     if(verbose) cat("   classifying sequence", min(idx), "to", max(idx), "\n")
     dfr <- multinomClassify(sequence[idx], fitted.model, post.prob = T)
     l <- sl[idx]
-    P1 <- (dfr$Post.prob.1 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
-    P2 <- (dfr$Post.prob.2 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
+    P1 <- (dfr$post_prob - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
+    P2 <- (dfr$post_prob_2 - (coef.bias[1]+coef.bias[2]*l))/(coef.sd[1]+coef.sd[2]*l)
     Ds <- P1 - P2
-    idd <- as.integer(factor(dfr$Taxon.1, levels = std.frame[,1]))
+    idd <- as.integer(factor(dfr$taxon, levels = std.frame[,1]))
     Rs <- (P1 - std.frame[idd,2])/std.frame[idd,3]
     lst <- approx(rprob.mat[,1], rprob.mat[,2], xout = Rs, yleft = 0, yright = 1)
     
-    restab$Genus[idx] <- dfr$Taxon.1
+    restab$Genus[idx] <- dfr$taxon
     restab$D.score[idx] <- Ds
     restab$R.score[idx] <- Rs
     restab$P.recognized[idx] <- lst$y

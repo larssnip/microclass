@@ -17,3 +17,11 @@ multinomTrainCpp <- function(seqs, K, names, classesIn, nPseudo) {
     .Call('_microclass_multinomTrainCpp', PACKAGE = 'microclass', seqs, K, names, classesIn, nPseudo)
 }
 
+rdpClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {
+    .Call('_microclass_rdpClassifyCpp', PACKAGE = 'microclass', seqs, K, QMat, Prior, posterior)
+}
+
+rdpTrainCpp <- function(seqs, K, names, classesIn, nPseudo) {
+    .Call('_microclass_rdpTrainCpp', PACKAGE = 'microclass', seqs, K, names, classesIn, nPseudo)
+}
+
