@@ -116,8 +116,20 @@ branch_retrieve <- function(leaf.tax.id, nodes.dmp){
   idx <- match(leaf.tax.id, nodes.dmp$tax_id)
   idd <- which(is.na(idx))
   if(length(idd) > 0){
-    stop("The tax_id", paste(leaf.tax.id[idd], collapse = ","), "does not exist in nodes.dmp table\n")
+    stop("The tax_id ", paste(leaf.tax.id[idd], collapse = ","), " does not exist in nodes.dmp table\n")
   }
+  cat("Pruning nodes.dmp")
+  all.tax.id <- unique(leaf.tax.id)
+  n.old <- length(all.tax.id)
+  all.tax.id <- unique(c(all.tax.id, nodes.dmp$parent_tax_id[idx]))
+  while(length(all.tax.id) > n.old){
+    cat(".")
+    n.old <- length(all.tax.id)
+    idx <- match(all.tax.id, nodes.dmp$tax_id)
+    all.tax.id <- unique(c(all.tax.id, nodes.dmp$parent_tax_id[idx]))
+  }
+  cat("keep", length(idx), "rows\n")
+  nodes.dmp <- nodes.dmp[idx,]
   branch.lst <- lapply(leaf.tax.id, get_branch, nodes.dmp)
   return(branch.lst)
 }
