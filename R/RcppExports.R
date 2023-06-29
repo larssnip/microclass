@@ -9,8 +9,8 @@ charToInt <- function(Seq) {
     .Call('_microclass_charToInt', PACKAGE = 'microclass', Seq)
 }
 
-multinomClassifyCpp <- function(seqs, K, QMat, Prior, posterior) {
-    .Call('_microclass_multinomClassifyCpp', PACKAGE = 'microclass', seqs, K, QMat, Prior, posterior)
+multinomClassifyCpp <- function(seqs, K, QMat, Prior, posterior, fullmat) {
+    .Call('_microclass_multinomClassifyCpp', PACKAGE = 'microclass', seqs, K, QMat, Prior, posterior, fullmat)
 }
 
 multinomTrainCpp <- function(seqs, K, names, classesIn, nPseudo) {
