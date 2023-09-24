@@ -149,8 +149,8 @@ get_branch <- function(leaf.tax.id, nodes.dmp){   # a single leaf
 
 
 #' @name branch_taxid2name
-#' @title Replace tax_id with name
 #' @aliases branch_taxid2name, branch_name2taxid
+#' @title Replace tax_id with name
 #' 
 #' @description Converts vectors of tax_id to vectors of names, or vice versa.
 #' 
@@ -158,7 +158,6 @@ get_branch <- function(leaf.tax.id, nodes.dmp){   # a single leaf
 #' 
 #' @param branch.lst a list of branches.
 #' @param names.dmp a names.dmp table.
-#' @param name.class text for filtering the \code{names.dmp}, see below.
 #' 
 #' @details This function is used to convert the tax_id's to name_txt's in a branch-list, or vice versa. See 
 #' \code{\link{branch_retrieve}} for more about branch-lists.
@@ -188,12 +187,16 @@ get_branch <- function(leaf.tax.id, nodes.dmp){   # a single leaf
 #' @export branch_name2taxid
 #' 
 branch_taxid2name <- function(branch.lst, names.dmp, name.class = "scientific name"){
-  names.dmp %>% 
-    filter(name_class == name.class) -> names.dmp
+  all.unique.taxid <- unique(unlist(branch.lst))
+  names.dmp <- names.dmp %>% 
+    filter(name_class == name.class) %>% 
+    filter(tax_id %in% all.unique.taxid)
   branch.lst <- lapply(branch.lst, get_taxon_name, names.dmp)
   return(branch.lst)
 }
 branch_name2taxid <- function(branch.lst, names.dmp){
+  all.unique.names <- unique(unlist(branch.lst))
+  names.dmp <- filter(names.dmp, name_txt %in% all.unique.names)
   branch.lst <- lapply(branch.lst, get_tax_id, names.dmp)
   return(branch.lst)
 }

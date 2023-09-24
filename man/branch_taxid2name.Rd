@@ -12,8 +12,6 @@ branch_taxid2name(branch.lst, names.dmp)
 \item{branch.lst}{a list of branches.}
 
 \item{names.dmp}{a names.dmp table.}
-
-\item{name.class}{text for filtering the \code{names.dmp}, see below.}
 }
 \value{
 A list containing named vectors of either texts (\code{branch_taxid2name}) or integers 
