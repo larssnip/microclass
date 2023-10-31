@@ -128,7 +128,7 @@ branch_retrieve <- function(leaf.tax.id, nodes.dmp){
     idx <- match(all.tax.id, nodes.dmp$tax_id)
     all.tax.id <- unique(c(all.tax.id, nodes.dmp$parent_tax_id[idx]))
   }
-  cat("keep", length(idx), "rows\n")
+  cat("retrieving branches...\n")
   nodes.dmp <- nodes.dmp[idx,]
   branch.lst <- lapply(leaf.tax.id, get_branch, nodes.dmp)
   return(branch.lst)
